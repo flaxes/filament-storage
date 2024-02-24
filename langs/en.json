@@ -1,28 +1,25 @@
 {
-    "filament": "filament",
-    "filaments": "filaments",
-    "material": "material",
-    "materials": "materials",
-    "type": "type",
-    "types": "types",
-    "color": "color",
-    "colors": "colors",
-    "brand": "brand",
-    "brands": "brands",
-    "history": "history",
-    "print": "print",
-    "prints": "prints",
-    "kg": "kg",
-    "weight": "weight",
+    "_header": {
+        "filaments": "Filaments",
+        "brands": "Brands",
+        "printHistory": "Print history",
+        "logout": "Logout",
+        "color": "Color",
+        "brand": "Brand",
+        "weight": "Weight",
+        "quantity": "quantity"
+    },
+
+    "actionDelete": "-",
+    "actionOpen": "<>",
+    "actionSearch": "Search",
+    "labelSearch": "Search:",
     "settings": "settings",
     "login": "login",
     "password": "password",
-    "created_at": "created at",
-    "updated_at": "updated at",
-    "quantity": "quantity",
     "used": "used",
     "count": "count",
-    "used_times": "used times",
+    "usedTimes": "used times",
     "open": "open",
     "show": "show",
     "edit": "edit",
@@ -30,12 +27,27 @@
     "replace": "replace",
     "update": "update",
     "create": "create",
+    "kg": "kg",
 
-    "_filaments_page": {
+    "_columns": {
+        "id": "ID",
+        "name": "Name",
+        "type": "Type",
+        "material": "Material",
+        "createdAt": "Created",
+        "updatedAt": "Updated",
+        "brand": "Brand",
+        "color": "View",
+        "colorName": "Color",
+        "quantity": "Quantity",
+        "price": "Price"
+    },
+
+    "_filamentsPage": {
         "h1": "Filaments"
     },
 
-    "_brands_page": {
+    "_brandsPage": {
         "h1": "Brands"
     }
 }

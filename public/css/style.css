@@ -1,0 +1,45 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    width: 100%;
+    background-color: var(--header-color);
+}
+
+.header .header-link {
+    display: inline-flex;
+    border: 2px solid var(--header-border-color);
+    padding: 6px 10px;
+
+    color: white;
+    text-align: center;
+    text-decoration: none;
+}
+
+.header div:last-child {
+    background-color: red;
+    margin-left: auto;
+}
+
+.header .header-link:hover {
+    background-color: var(--header-border-color);
+}
+
+.table {
+    /* width: 100%; */
+}
+
+.table tr,
+td {
+    padding-right: 12px;
+}
+
+:root {
+    --header-color: #340049;
+    --header-border-color: #3f0091;
+}

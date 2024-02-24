@@ -8,10 +8,10 @@ const printHistroyController = require("./print-history.controller");
 
 const controllers = Router();
 
-controllers.use("/brand", brandController);
+controllers.use("/brands", brandController);
 controllers.use("/filament-settings", filamentSettingsController);
-controllers.use("/filament-material", filamentMaterialController);
-controllers.use("/filament", filamentController);
+controllers.use("/filament-materials", filamentMaterialController);
+controllers.use("/filaments", filamentController);
 controllers.use("/print-history", printHistroyController);
 
 controllers.use(errorHandlerMiddleware);

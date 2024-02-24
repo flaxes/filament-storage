@@ -1,1 +1,11 @@
-createTable("/api/brands", ["id", "name", "created_at"], document.body);
+// @ts-check
+new TableHtml(
+    "/api/brands",
+    {
+        id: "number",
+        name: "string",
+        createdAt: "date",
+        updatedAt: "date",
+    },
+    document.body
+);

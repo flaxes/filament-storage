@@ -40,6 +40,7 @@ declare interface FilamentEntity {
     color: string;
     colorName: string;
     material: string;
+    type?: string;
 
     settings?: FilamentSettings[];
     prints?: PrintHistory[];

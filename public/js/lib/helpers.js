@@ -7,6 +7,34 @@ function qq(sel) {
 }
 
 /**
+ * 
+ * @param {string} tag 
+ * @param {string} [text]
+ * @param {Record<string, string> | null} [props]
+ * @param {string[]} [elements]
+ * @returns 
+ */
+function wrapTag(tag, text, props, elements) {
+    let html = `<${tag}`;
+
+    if (props) {
+        for (const key in props) {
+            html += ` ${key}="${props[key]}"`;
+        }
+    }
+
+    html += ">";
+
+    if (elements) {
+        html += elements.join("");
+    }
+
+    html += `${text || ''}</${tag}>`;
+
+    return html;
+}
+
+/**
  *
  * @param {string} url
  * @param {object} body
