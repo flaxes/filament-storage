@@ -1,7 +1,7 @@
 // @ts-check
 
 const { default: helmet } = require("helmet");
-const security = require("./middlewares/security.middleware");
+const security = require("../middlewares/security.middleware");
 const express = require("express");
 
 const server = express();

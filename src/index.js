@@ -1,19 +1,18 @@
 // @ts-check
 
 const config = require("../config");
-const endpointsRouter = require("./endpoints");
-const server = require("./server");
-const express = require("express");
+const controllers = require("./controllers");
+const server = require("./core/server");
+const { static } = require("express");
+const createLoggerSimple = require("./lib/logger");
+const lang = require("./core/lang");
 
-server.use("/api", endpointsRouter);
-server.use(express.static("./public"));
+const logger = createLoggerSimple("App");
+
+server.use(static("public"));
+server.get("/lang", (req, res) => res.json(lang));
+server.use("/api", controllers);
 
 server.listen(config.port, () => {
-    console.info(
-        new Date().toLocaleString(),
-        "Filament-Server listen on",
-        config.port,
-        "\n",
-        `http://127.0.0.1:${config.port}`
-    );
+    logger.info("Filament-Server listen on", config.port, `http://127.0.0.1:${config.port}`);
 });

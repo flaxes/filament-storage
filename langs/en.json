@@ -1,0 +1,41 @@
+{
+    "filament": "filament",
+    "filaments": "filaments",
+    "material": "material",
+    "materials": "materials",
+    "type": "type",
+    "types": "types",
+    "color": "color",
+    "colors": "colors",
+    "brand": "brand",
+    "brands": "brands",
+    "history": "history",
+    "print": "print",
+    "prints": "prints",
+    "kg": "kg",
+    "weight": "weight",
+    "settings": "settings",
+    "login": "login",
+    "password": "password",
+    "created_at": "created at",
+    "updated_at": "updated at",
+    "quantity": "quantity",
+    "used": "used",
+    "count": "count",
+    "used_times": "used times",
+    "open": "open",
+    "show": "show",
+    "edit": "edit",
+    "delete": "delete",
+    "replace": "replace",
+    "update": "update",
+    "create": "create",
+
+    "_filaments_page": {
+        "h1": "Filaments"
+    },
+
+    "_brands_page": {
+        "h1": "Brands"
+    }
+}
