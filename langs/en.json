@@ -45,7 +45,9 @@
         "color": "View",
         "colorName": "Color",
         "quantity": "Quantity",
-        "price": "Price"
+        "price": "Price",
+        "filament": "Filament",
+        "filamentId": "Filament ID"
     },
 
     "_homePage": {

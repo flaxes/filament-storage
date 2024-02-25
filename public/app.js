@@ -59,7 +59,7 @@ async function app() {
 
         "/filaments/card": {
             key: "_filamentsPage",
-            scripts: ["/js/pages/filaments-card.js"],
+            scripts: ["/js/pages/filaments.card.js"],
         },
 
         "/login": {

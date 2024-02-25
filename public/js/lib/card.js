@@ -1,7 +1,7 @@
 // @ts-check
 
 class CardHtml {
-    constructor(urlPath, columns, appendTo) {
+    constructor(urlPath, columns, appendTo, entityName) {
         this.urlPath = urlPath;
         this.columns = columns;
 
@@ -18,7 +18,7 @@ class CardHtml {
         this.id = this.search.id;
         this.data = {};
 
-        this.card.innerHTML = wrapTag("label", lang.labelCard);
+        this.card.innerHTML = wrapTag("label", `${lang._columns[entityName] || entityName} ${lang.labelCard}`);
 
         if (!this.id) {
             this.dropPage();
@@ -47,21 +47,29 @@ class CardHtml {
     async renderCard() {
         this.data = await request(`${this.urlPath}/id/${this.search.id}`, {}, "GET");
 
-        if (!this.data) {
+        if (!this.data || !this.data.id) {
             return this.dropPage();
         }
 
-        const entiries = await Object.entries(this.columns).map(([column, columnType]) =>
-            wrapTag("div", "", { class: "card-field" }, [
-                wrapTag("label", `${lang._columns[column]}: `, { class: "card-field-label", for: "input" }),
-                TableHtml.formatValue(this.data[column], columnType, column),
-            ])
-        );
+        const entiries = [];
+        for (const [column, columnType] of Object.entries(this.columns)) {
+            if (typeof columnType === "object" && columnType.from) {
+                await TableHtml.initRemoteValues(columnType.remoteName, columnType.from);
+            }
+
+            entiries.push(
+                wrapTag("div", "", { class: "card-field" }, [
+                    wrapTag("label", `${lang._columns[column]}: `, { class: "card-field-label", for: "input" }),
+                    TableHtml.formatValue(this.data[column], columnType, column),
+                ])
+            );
+        }
 
         entiries.push(
             wrapTag("div", "", { class: "card-field" }, [
                 wrapTag("button", "", { class: "delete-button fa fa-trash" }),
                 wrapTag("button", "", { class: "save-button fa fa-floppy-o" }),
+                wrapTag("button", "", { class: "link-button fa fa-link" }),
             ])
         );
 
@@ -69,56 +77,53 @@ class CardHtml {
 
         const mainContainer = this.createContainer("main");
         mainContainer.innerHTML = html;
+
+        // @ts-ignore
+        mainContainer.querySelector(".delete-button").onclick = (e) => this.onDeleteButton(e);
+        // @ts-ignore
+        mainContainer.querySelector(".link-button").onclick = () => this.onLinkButton();
+        // @ts-ignore
+        mainContainer.querySelector(".save-button").onclick = (e) => this.onSaveButton(e);
     }
 
     async init() {
         await this.renderCard();
 
         this.appendTo.append(this.card);
-        return;
-        const columnsTr = document.createElement("tr");
+    }
 
-        for (const column in this.columns) {
-            const th = document.createElement("th");
-            th.innerText = lang._columns[column] || `?${column}?`;
+    /** @private */
+    async onDeleteButton(e) {
+        const isAgreed = confirm(lang.promptAreYouSure);
+        if (!isAgreed) return;
 
-            columnsTr.append(th);
-        }
+        // const result =
+        await request(`${this.urlPath}/delete`, { ids: [this.id] }, "POST");
 
-        this.table.append(columnsTr);
+        document.location.reload();
+    }
 
-        const data = await request(this.urlPath, null, "GET");
-        const buttons = `<td>
-        <button class="delete-button fa fa-trash"></button>
-        <button class="open-button fa fa-eye"></button>
-        <button class="save-button fa fa-floppy-o"></button>
-        </td>`;
+    /** @private */
+    async onSaveButton(e) {
+        const newData = { id: this.id };
 
-        for (const row of data) {
-            this.data[row.id] = row;
+        this.containers.main.querySelectorAll("input,select").forEach((input) => {
+            const column = input.name;
+            const val = TableHtml.unformatValue(input, this.columns[column], column);
 
-            const trEl = document.createElement("tr");
-            trEl.dataset.id = row.id;
-
-            for (const column in this.columns) {
-                const type = this.columns[column];
-                const val = row[column];
-
-                trEl.innerHTML += `<td>${TableHtml.formatValue(val, type, column)}</td>`;
+            if (val !== undefined) {
+                newData[column] = val;
             }
+        });
 
-            trEl.innerHTML += buttons + "</tr>";
+        await request(`${this.urlPath}/update`, { objects: [newData] }, "POST");
 
-            this.table.append(trEl);
+        document.location.reload();
+    }
 
-            // @ts-ignore
-            trEl.querySelector(".delete-button").onclick = (e) => this.onDeleteButton(e);
-            // @ts-ignore
-            trEl.querySelector(".open-button").onclick = (e) => this.onOpenButton(e);
-            // @ts-ignore
-            trEl.querySelector(".save-button").onclick = (e) => this.onSaveButton(e);
-        }
+    onLinkButton() {
+        const link = window.location.href;
 
-        this.appendTo.append(this.tableOuter);
+        copyToClipboard(link);
     }
 }

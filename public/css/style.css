@@ -66,6 +66,10 @@ td {
     font-weight: bold;
 }
 
+.table td button {
+    padding: 6px;
+}
+
 .card {
     width: 15%;
 }
@@ -83,6 +87,11 @@ td {
 
 .card .card-field:last-child {
     justify-content: center;
+}
+
+.card .card-field button {
+    margin: 6px;
+    padding: 6px;
 }
 
 :root {

@@ -12,6 +12,10 @@ function dateTimeLocal(date) {
     return result;
 }
 
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+}
+
 /**
  *
  * @param {string} err

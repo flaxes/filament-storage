@@ -12,7 +12,9 @@ const crudController = (repo) => {
         res.json(await repo.findAll());
     });
     router.get("/id/:id", async (req, res) => {
-        res.json(await repo.findById(Number(req.params.id)));
+        const result = await repo.findById(Number(req.params.id));
+
+        res.json(result || { error: "not found" });
     });
 
     router.use(json({ limit: "1mb" }));

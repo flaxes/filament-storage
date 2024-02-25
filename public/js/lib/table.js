@@ -182,11 +182,11 @@ class TableHtml {
         this.table.append(columnsTr);
 
         const data = await request(this.urlPath, null, "GET");
-        const buttons = `<td>
-        <button class="delete-button fa fa-trash"></button>
-        <button class="open-button fa fa-eye"></button>
-        <button class="save-button fa fa-floppy-o"></button>
-        </td>`;
+        const buttons = wrapTag("td", "", {}, [
+            wrapTag("button", "", { class: "delete-button fa fa-trash" }),
+            wrapTag("button", "", { class: "open-button fa fa-eye" }),
+            wrapTag("button", "", { class: "save-button fa fa-floppy-o" }),
+        ]);
 
         for (const row of data) {
             this.data[row.id] = row;
@@ -251,7 +251,7 @@ class TableHtml {
 
         element.querySelectorAll("input,select").forEach((input) => {
             const column = input.name;
-            const val = TableHtml.unformatValue(input, this.columns[column]);
+            const val = TableHtml.unformatValue(input, this.columns[column], column);
 
             if (val) {
                 newData[column] = val;
