@@ -66,8 +66,24 @@ td {
     font-weight: bold;
 }
 
+.table th {
+    background-color: lightgrey;
+}
+
 .table td button {
     padding: 6px;
+}
+
+.table-search {
+    display: flex;
+}
+
+.table-search label {
+    padding-top: 4px;
+}
+
+.table-search button {
+    padding: 4px;
 }
 
 .card {

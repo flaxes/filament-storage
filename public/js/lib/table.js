@@ -18,11 +18,14 @@ class TableHtml {
      * @param {string} urlPath
      * @param {Record<string, ColumnType>} columns
      * @param {Element} appendTo
+     * @param {boolean} [isCardAvailable]
      */
-    constructor(urlPath, columns, appendTo) {
+    constructor(urlPath, columns, appendTo, isCardAvailable) {
         this.urlPath = urlPath;
         this.columns = columns;
         this.appendTo = appendTo;
+
+        this.isCardAvailable = isCardAvailable;
 
         this.data = {};
 
@@ -32,6 +35,18 @@ class TableHtml {
         this.tableOuter.append(this.table);
         this.tableOuter.className = "table-outer";
         this.table.className = "table";
+
+        const buttons = [
+            wrapTag("button", "", { class: "delete-button fa fa-trash" }),
+            wrapTag("button", "", { class: "save-button fa fa-floppy-o" }),
+        ];
+
+        if (this.isCardAvailable) {
+            buttons.push(wrapTag("button", "", { class: "open-button fa fa-eye" }));
+        }
+
+        const buttonsHtml = wrapTag("td", "", {}, buttons);
+        this.buttonsHtml = buttonsHtml;
 
         this.init();
     }
@@ -113,7 +128,7 @@ class TableHtml {
     }
 
     /**
-     * @param {HTMLInputElement} element
+     * @param {HTMLInputElement | HTMLSelectElement} element
      * @param {ColumnType} type
      * @param {string} [column]
      */
@@ -129,6 +144,7 @@ class TableHtml {
 
         switch (primitiveType) {
             case "boolean":
+                // @ts-ignore
                 return element.checked;
             case "color":
                 return value;
@@ -150,13 +166,53 @@ class TableHtml {
     /** @private */
     createSearchEl() {
         const searchEl = wrapTag("div", "", { class: "table-search" }, [
-            wrapTag("b", lang.labelSearch),
-            wrapTag("input", "", { placeholder: "" }),
-            wrapTag("button", lang.actionSearch),
+            wrapTag("label", lang.labelSearch, { for: "table-search" }),
+            wrapTag("input", "", { placeholder: "", id: "table-search" }),
+            wrapTag("button", "", { class: "search-button fa fa-search" }),
+            wrapTag("button", "", { class: "create-button fa fa-plus" }),
         ]);
 
         this.appendTo.innerHTML += searchEl;
-        q(".table-search > button").onclick = (e) => this.onSearchButton(e);
+
+        q(".table-search .create-button").onclick = (e) => this.onCreateButton(e);
+        q(".table-search .search-button").onclick = (e) => this.onSearchButton(e);
+    }
+
+    async createRow(row) {
+        const element = document.createElement("tr");
+        const id = row.id;
+
+        if (id) {
+            element.dataset.id = id;
+        }
+
+        for (const column in this.columns) {
+            const type = this.columns[column];
+            const val = row[column];
+
+            element.innerHTML += `<td>${await TableHtml.formatValue(val, type, column)}</td>`;
+        }
+
+        element.innerHTML += this.buttonsHtml + "</tr>";
+
+        const afterAppend = () => {
+            const openButton = element.querySelector(".open-button");
+            if (openButton) {
+                if (id) {
+                    // @ts-ignore
+                    element.querySelector(".open-button").onclick = (e) => this.onOpenButton(e);
+                } else {
+                    openButton.remove();
+                }
+            }
+
+            // @ts-ignore
+            element.querySelector(".delete-button").onclick = (e) => this.onDeleteButton(e);
+            // @ts-ignore
+            element.querySelector(".save-button").onclick = (e) => this.onSaveButton(e);
+        };
+
+        return { element, afterAppend };
     }
 
     async init() {
@@ -168,49 +224,31 @@ class TableHtml {
         for (const column in this.columns) {
             const th = document.createElement("th");
             th.innerText = lang._columns[column] || `?${column}?`;
-            const columnVal = this.columns[column];
+            const columnType = this.columns[column];
 
-            if (typeof columnVal === "object" && columnVal.from) {
-                remoteInitPromises.push(TableHtml.initRemoteValues(columnVal.remoteName, columnVal.from));
+            if (typeof columnType === "object" && columnType.from) {
+                remoteInitPromises.push(TableHtml.initRemoteValues(columnType.remoteName, columnType.from));
             }
 
             columnsTr.append(th);
         }
+
+        columnsTr.innerHTML += wrapTag("th", lang.labelActions);
 
         await Promise.all(remoteInitPromises);
 
         this.table.append(columnsTr);
 
         const data = await request(this.urlPath, null, "GET");
-        const buttons = wrapTag("td", "", {}, [
-            wrapTag("button", "", { class: "delete-button fa fa-trash" }),
-            wrapTag("button", "", { class: "open-button fa fa-eye" }),
-            wrapTag("button", "", { class: "save-button fa fa-floppy-o" }),
-        ]);
 
-        for (const row of data) {
+        for (let i = data.length - 1; i >= 0; i--) {
+            const row = data[i];
             this.data[row.id] = row;
 
-            const trEl = document.createElement("tr");
-            trEl.dataset.id = row.id;
+            const { afterAppend, element } = await this.createRow(row);
 
-            for (const column in this.columns) {
-                const type = this.columns[column];
-                const val = row[column];
-
-                trEl.innerHTML += `<td>${await TableHtml.formatValue(val, type, column)}</td>`;
-            }
-
-            trEl.innerHTML += buttons + "</tr>";
-
-            this.table.append(trEl);
-
-            // @ts-ignore
-            trEl.querySelector(".delete-button").onclick = (e) => this.onDeleteButton(e);
-            // @ts-ignore
-            trEl.querySelector(".open-button").onclick = (e) => this.onOpenButton(e);
-            // @ts-ignore
-            trEl.querySelector(".save-button").onclick = (e) => this.onSaveButton(e);
+            this.table.append(element);
+            afterAppend();
         }
 
         this.appendTo.append(this.tableOuter);
@@ -218,15 +256,17 @@ class TableHtml {
 
     /** @private */
     async onDeleteButton(e) {
-        const { data } = this.getDataFromE(e);
+        const { data, element } = this.getDataFromE(e);
 
-        const isAgreed = confirm(lang.promptAreYouSure);
-        if (!isAgreed) return;
+        if (data) {
+            const isAgreed = confirm(lang.promptAreYouSure);
+            if (!isAgreed) return;
 
-        // const result =
-        await request(`${this.urlPath}/delete`, { ids: [data.id] }, "POST");
+            // const result =
+            await request(`${this.urlPath}/delete`, { ids: [data.id] }, "POST");
+        }
 
-        document.location.reload();
+        element.remove();
     }
 
     /** @private */
@@ -247,21 +287,38 @@ class TableHtml {
     /** @private */
     async onSaveButton(e) {
         const { element, id } = this.getDataFromE(e);
-        const newData = { id };
+        const newData = {};
+        element.querySelectorAll("input,select").forEach(
+            /** @param {HTMLInputElement | HTMLSelectElement} input */ // @ts-ignore
+            (input) => {
+                const column = input.name;
+                const val = TableHtml.unformatValue(input, this.columns[column], column);
 
-        element.querySelectorAll("input,select").forEach((input) => {
-            const column = input.name;
-            const val = TableHtml.unformatValue(input, this.columns[column], column);
-
-            if (val) {
-                newData[column] = val;
+                if (val !== undefined) {
+                    newData[column] = val;
+                }
             }
-        });
+        );
 
-        // const result =
-        await request(`${this.urlPath}/update`, { objects: [newData] }, "POST");
+        const requestBody = { objects: [newData] };
+        if (id) {
+            newData.id = id;
+
+            // const result =
+            await request(`${this.urlPath}/update`, requestBody, "POST");
+        } else {
+            await request(`${this.urlPath}/create`, requestBody, "POST");
+        }
 
         document.location.reload();
+    }
+
+    async onCreateButton(e) {
+        const { afterAppend, element } = await this.createRow({});
+        this.table.children[0].after(element);
+        e.target.remove();
+
+        afterAppend();
     }
 
     /** @private */
@@ -270,9 +327,14 @@ class TableHtml {
         const element = e.target.parentElement.parentElement;
         // @ts-ignore
         const id = element.dataset.id;
-        const data = this.data[id];
 
-        return { element, id: data.id, data };
+        if (id) {
+            const data = this.data[id];
+
+            return { element, id: data.id, data };
+        }
+
+        return { element };
     }
 }
 

@@ -14,5 +14,6 @@ new TableHtml(
         createdAt: "date",
         updatedAt: "date",
     },
-    main
+    main,
+    true
 );

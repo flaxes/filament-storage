@@ -1,7 +1,15 @@
 // @ts-check
 
 class CardHtml {
-    constructor(urlPath, columns, appendTo, entityName) {
+    /**
+     *
+     * @param {string} urlPath
+     * @param {Record<string, ColumnType>} columns
+     * @param {Element} appendTo
+     * @param {string} entityName
+     * @param {boolean} [isNew]
+     */
+    constructor(urlPath, columns, appendTo, entityName, isNew) {
         this.urlPath = urlPath;
         this.columns = columns;
 
@@ -9,13 +17,19 @@ class CardHtml {
         card.className = "card";
         this.card = card;
 
+        this.isNew = isNew === true;
+
         this.containers = {};
         this.appendTo = appendTo;
 
         const params = new URL(document.location.href).searchParams;
 
-        this.search = Object.fromEntries(params.entries());
-        this.id = this.search.id;
+        if (!isNew) {
+            // @ts-ignore
+            this.search = Object.fromEntries(params.entries());
+            this.id = this.search.id || void 0;
+        }
+
         this.data = {};
 
         this.card.innerHTML = wrapTag("label", `${lang._columns[entityName] || entityName} ${lang.labelCard}`);
@@ -23,6 +37,8 @@ class CardHtml {
         if (!this.id) {
             this.dropPage();
         }
+
+        this.createContainer("main");
 
         this.init();
     }
@@ -44,11 +60,83 @@ class CardHtml {
         return this.containers[name] || never(`Unknown container name "${name}"`);
     }
 
-    async renderCard() {
-        this.data = await request(`${this.urlPath}/id/${this.search.id}`, {}, "GET");
+    /**
+     *
+     * @param {string} label
+     * @param {[string, string][]} fields - [name, placeholder]
+     * @param {(files: File[], response: any) => any} [onUpload] - callback triggered with request of client and response of server
+     * @param {string} [uploadUrl] - url
+     */
+    createUploadForm(label, fields, onUpload, uploadUrl = "/api/uploads/create") {
+        const form = document.createElement("div");
 
-        if (!this.data || !this.data.id) {
-            return this.dropPage();
+        const inputs = [];
+
+        fields.forEach(([name, placeholder]) =>
+            inputs.push(wrapTag("input", "", { type: "text", class: "upload-form-field", placeholder, name }))
+        );
+
+        /* for (const file of files) {
+            const options = { type: "file", name: file.name };
+            if (file.isMultiple) {
+                options.name += "[]";
+                options.multiple = "multiple";
+            }
+
+            inputs.push(wrapTag("input", "", options));
+        } */
+
+        inputs.push(
+            wrapTag("button", "", {
+                class: "upload-form-submit fa fa-paper-plane",
+            })
+        );
+
+        form.innerHTML += [wrapTag("label", label), wrapTag("div", "", { class: "upload-form" }, inputs)].join("");
+        const afterAppend = () => {
+            const sendCb = async () => {
+                const formData = new FormData();
+
+                // Add a text field
+                formData.append("cdntoken", CDN_TOKEN);
+
+                // @ts-ignore
+                const selection = await window.showOpenFilePicker({ multiple: true });
+
+                for (const s of selection) {
+                    const file = await s.getFile();
+                    formData.append("files[]", file);
+                }
+
+                try {
+                    const response = await fetch(uploadUrl, {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    const json = await response.json();
+                    if (onUpload) {
+                        onUpload(selection, json);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            };
+
+            // @ts-ignore
+            form.querySelector("button").onclick = sendCb;
+        };
+
+        return { form, afterAppend };
+    }
+
+    async renderCard() {
+        if (!this.isNew && this.search) {
+            this.data = await request(`${this.urlPath}/id/${this.search.id}`, {}, "GET");
+
+            if (!this.data || !this.data.id) {
+                return;
+            }
         }
 
         const entiries = [];
@@ -75,7 +163,7 @@ class CardHtml {
 
         let html = wrapTag("div", "", { class: "card-main" }, entiries);
 
-        const mainContainer = this.createContainer("main");
+        const mainContainer = this.getContainer("main");
         mainContainer.innerHTML = html;
 
         // @ts-ignore
@@ -105,7 +193,7 @@ class CardHtml {
 
     /** @private */
     async onSaveButton(e) {
-        const newData = { id: this.id };
+        const newData = {};
 
         this.containers.main.querySelectorAll("input,select").forEach((input) => {
             const column = input.name;
@@ -116,7 +204,11 @@ class CardHtml {
             }
         });
 
-        await request(`${this.urlPath}/update`, { objects: [newData] }, "POST");
+        if (this.isNew) {
+        } else {
+            newData.id = this.id;
+            await request(`${this.urlPath}/update`, { objects: [newData] }, "POST");
+        }
 
         document.location.reload();
     }

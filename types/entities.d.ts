@@ -26,9 +26,29 @@ declare interface FilamentSettingsEntity {
 }
 
 declare interface PrintHistoryEntity {
+    filamentSettingIds: number[];
+    photoUploadsIds: number[];
+    projectUploadsIds: number[];
+    weight: number;
+    cost: number;
+}
+
+declare interface PrintEntity {
     name: string;
 
-    filamentSettingIds: number[];
+    printedTimes: number;
+
+    projectLink?: string;
+    originLink?: string;
+    history: PrintHistoryEntity[];
+}
+
+declare interface UploadEntity {
+    name: string;
+    filePath: string;
+    extension: string;
+    size: number;
+    isPhoto?: boolean;
 }
 
 declare interface FilamentEntity {

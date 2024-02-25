@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "ES6",
+        "target": "ES2022",
+        "lib": ["ESNext", "DOM"],
+        "checkJs": true,
+        "strictNullChecks": true,
+        "skipLibCheck": true,
+        "outDir": "./build"
+    },
+    "include": ["**/*"],
+    "exclude": ["build"]
+}

@@ -2,51 +2,59 @@
 /** @type {import('../langs/en.json')} */ // @ts-ignore
 const lang = {};
 const main = document.querySelector("main") || never("NO MAIN");
-
-const render = {
-    header: () => {
-        const links = [
-            {
-                name: lang._header.index,
-                link: "/",
-            },
-            {
-                name: lang._header.filaments,
-                link: "/filaments",
-            },
-            {
-                name: lang._header.brands,
-                link: "/brands",
-            },
-            {
-                name: lang._header.filamentMaterials,
-                link: "/filament-materials",
-            },
-            {
-                name: lang._header.printHistory,
-                link: "/print-history",
-            },
-            {
-                name: lang._header.logout,
-                link: "/logout",
-            },
-        ];
-
-        const d = document.createElement("header");
-        d.className = "header";
-
-        for (const link of links) {
-            d.innerHTML += wrapTag("div", "", {}, [wrapTag("a", link.name, { class: "header-link", href: link.link })]);
-
-            // d.innerHTML += wrapTag("a", link.name, { class: "header-link", href: link.link });
-        }
-
-        document.body.prepend(d);
-    },
-};
+let CDN_TOKEN = "???";
 
 async function app() {
+    const render = {
+        header: () => {
+            const links = [
+                {
+                    name: lang._header.index,
+                    link: "/",
+                },
+                {
+                    name: lang._header.filaments,
+                    link: "/filaments",
+                },
+                {
+                    name: lang._header.brands,
+                    link: "/brands",
+                },
+                {
+                    name: lang._header.filamentMaterials,
+                    link: "/filament-materials",
+                },
+                {
+                    name: lang._header.prints,
+                    link: "/prints",
+                },
+                {
+                    name: lang._header.logout,
+                    link: "/logout",
+                },
+            ];
+
+            const d = document.createElement("header");
+            d.className = "header";
+
+            for (const link of links) {
+                d.innerHTML += wrapTag("div", "", {}, [
+                    wrapTag("a", link.name, { class: "header-link", href: link.link }),
+                ]);
+
+                // d.innerHTML += wrapTag("a", link.name, { class: "header-link", href: link.link });
+            }
+
+            document.body.prepend(d);
+        },
+    };
+
     const PAGES = {
+        "/login": {
+            key: "_loginPage",
+            scripts: ["/js/pages/login.js"],
+        },
+
         "/": {
             key: "_homePage",
             scripts: ["/js/pages/home.js"],
@@ -59,12 +67,12 @@ async function app() {
 
         "/filaments/card": {
             key: "_filamentsPage",
-            scripts: ["/js/pages/filaments.card.js"],
+            scripts: ["/js/pages/cards/filaments.card.js"],
         },
 
-        "/login": {
-            key: "_loginPage",
-            scripts: ["/js/pages/login.js"],
+        "/prints": {
+            key: "_printsPage",
+            scripts: ["/js/pages/prints.js"],
         },
 
         "/brands": {
@@ -75,11 +83,6 @@ async function app() {
         "/filament-materials": {
             key: "_filamentMaterialsPage",
             scripts: ["/js/pages/filament-materials.js"],
-        },
-
-        "/filament-card": {
-            key: "_filamentCardPage",
-            scripts: ["/js/pages/filament-card.js"],
         },
 
         "/f": {
