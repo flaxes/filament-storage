@@ -1,6 +1,8 @@
 {
     "_header": {
+        "index": "Home",
         "filaments": "Filaments",
+        "filamentMaterials": "Materials",
         "brands": "Brands",
         "printHistory": "Print history",
         "logout": "Logout",
@@ -10,9 +12,12 @@
         "quantity": "quantity"
     },
 
-    "actionDelete": "-",
-    "actionOpen": "<>",
+    "actionDelete": "Del",
+    "actionOpen": "Open",
+    "actionSave": "Save",
     "actionSearch": "Search",
+    "promptAreYouSure": "Are you sure?",
+    "labelCard": "Card:",
     "labelSearch": "Search:",
     "settings": "settings",
     "login": "login",
@@ -43,8 +48,16 @@
         "price": "Price"
     },
 
+    "_homePage": {
+        "h1": "Dashboard"
+    },
+
     "_filamentsPage": {
         "h1": "Filaments"
+    },
+
+    "_filamentMaterialsPage": {
+        "h1": "Filament materials"
     },
 
     "_brandsPage": {

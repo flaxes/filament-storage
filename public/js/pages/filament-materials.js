@@ -1,10 +1,9 @@
 // @ts-check
 new TableHtml(
-    "/api/brands",
+    "/api/filament-materials",
     {
         id: "number",
         name: "string",
-        isBanned: 'boolean',
         createdAt: "date",
         updatedAt: "date",
     },

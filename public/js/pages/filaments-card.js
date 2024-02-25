@@ -1,11 +1,10 @@
 // @ts-check
-
-new TableHtml(
+new CardHtml(
     "/api/filaments",
     {
         id: "number",
-        material: { type: "select", from: "/api/filament-materials", remoteName: "filamentMaterials" },
-        brand: { type: "select", from: "/api/brands", remoteName: "brands" },
+        material: "string",
+        brand: "string",
         color: "color",
         type: "string",
         colorName: "string",

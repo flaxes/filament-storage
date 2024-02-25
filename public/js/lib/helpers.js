@@ -6,13 +6,28 @@ function qq(sel) {
     return document.querySelectorAll(sel);
 }
 
+function dateTimeLocal(date) {
+    const result = new Date(date.getTime() - date.getTimezoneOffset() * 60e3).toISOString().slice(0, -1);
+
+    return result;
+}
+
 /**
- * 
- * @param {string} tag 
+ *
+ * @param {string} err
+ * @returns {never}
+ */
+function never(err) {
+    throw new Error(err);
+}
+
+/**
+ *
+ * @param {keyof HTMLElementTagNameMap} tag
  * @param {string} [text]
  * @param {Record<string, string> | null} [props]
  * @param {string[]} [elements]
- * @returns 
+ * @returns
  */
 function wrapTag(tag, text, props, elements) {
     let html = `<${tag}`;
@@ -29,7 +44,7 @@ function wrapTag(tag, text, props, elements) {
         html += elements.join("");
     }
 
-    html += `${text || ''}</${tag}>`;
+    html += `${text || ""}</${tag}>`;
 
     return html;
 }

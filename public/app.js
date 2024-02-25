@@ -1,17 +1,26 @@
 // @ts-check
 /** @type {import('../langs/en.json')} */ // @ts-ignore
 const lang = {};
+const main = document.querySelector("main") || never("NO MAIN");
 
 const render = {
     header: () => {
         const links = [
             {
-                name: lang._header.filaments,
+                name: lang._header.index,
                 link: "/",
+            },
+            {
+                name: lang._header.filaments,
+                link: "/filaments",
             },
             {
                 name: lang._header.brands,
                 link: "/brands",
+            },
+            {
+                name: lang._header.filamentMaterials,
+                link: "/filament-materials",
             },
             {
                 name: lang._header.printHistory,
@@ -27,27 +36,54 @@ const render = {
         d.className = "header";
 
         for (const link of links) {
-            d.innerHTML += wrapTag("div", '', {}, [
-                wrapTag("a", link.name, { class: "header-link", href: link.link }),
-            ]);
+            d.innerHTML += wrapTag("div", "", {}, [wrapTag("a", link.name, { class: "header-link", href: link.link })]);
 
             // d.innerHTML += wrapTag("a", link.name, { class: "header-link", href: link.link });
         }
 
-        document.body.append(d);
+        document.body.prepend(d);
     },
 };
 
 async function app() {
     const PAGES = {
         "/": {
+            key: "_homePage",
+            scripts: ["/js/pages/home.js"],
+        },
+
+        "/filaments": {
             key: "_filamentsPage",
-            scripts: ["./js/pages/filaments.js"],
+            scripts: ["/js/pages/filaments.js"],
+        },
+
+        "/filaments/card": {
+            key: "_filamentsPage",
+            scripts: ["/js/pages/filaments-card.js"],
+        },
+
+        "/login": {
+            key: "_loginPage",
+            scripts: ["/js/pages/login.js"],
         },
 
         "/brands": {
             key: "_brandsPage",
-            scripts: ["./js/pages/brands.js"],
+            scripts: ["/js/pages/brands.js"],
+        },
+
+        "/filament-materials": {
+            key: "_filamentMaterialsPage",
+            scripts: ["/js/pages/filament-materials.js"],
+        },
+
+        "/filament-card": {
+            key: "_filamentCardPage",
+            scripts: ["/js/pages/filament-card.js"],
+        },
+
+        "/f": {
+            redirect: "/filaments/card",
         },
     };
 
@@ -63,12 +99,17 @@ async function app() {
     if (!PAGE) {
         const d = document.createElement("div");
 
-        d.innerText = "PAGE UNKNOWN";
+        d.innerText = `PAGE UNKNOWN "${pageName}"`;
         // @ts-ignore
         headTitle.innerText = "PAGE UNKNOWN";
 
-        document.body.append(d);
+        main.append(d);
 
+        return;
+    }
+
+    if (PAGE.redirect) {
+        document.location.href = `${PAGE.redirect}${document.location.search}`;
         return;
     }
 
