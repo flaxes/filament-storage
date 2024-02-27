@@ -25,5 +25,20 @@
 
     table.createHeaderEl();
 
+    (q(".table-header") || never()).insertAdjacentHTML(
+        "beforeend",
+        wrapTag("button", "", {
+            id: "table-import",
+            class: "fa fa-file-excel-o",
+        })
+    );
+
+    // @ts-ignore
+    q("#table-import").onclick = () => {
+        const url = window.location.origin + "/api/filaments/filaments.xlsx";
+
+        window.location.replace(url);
+    };
+
     table.init();
 })();

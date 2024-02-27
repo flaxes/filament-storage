@@ -34,7 +34,7 @@ declare interface PrintEntity {
 
     photoUrls?: string[];
 
-    previewFile?: string,
+    previewFile?: string;
     projectUploadFile?: string;
 
     weightGramms?: number;
@@ -61,5 +61,5 @@ declare interface FilamentEntity {
     type?: string;
     comment?: string;
 
-    butLink?: string;
+    qr?: string;
 }

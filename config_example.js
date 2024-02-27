@@ -10,7 +10,6 @@ module.exports = {
     domain: "http://127.0.0.1:5000",
 
     // Git
-    updateFrom: "https://github.com/flaxes/filament-storage",
     updateBranch: "master",
     // Checks "version" property
     updateManifest: "https://raw.githubusercontent.com/flaxes/filament-storage/master/package.json",

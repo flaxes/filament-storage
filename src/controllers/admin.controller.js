@@ -21,6 +21,8 @@ adminController.post("/version-update", async (req, res) => {
     logger.warn("Version-Update", result);
 
     res.json(result);
+
+    process.exit(0);
 });
 
 module.exports = adminController;

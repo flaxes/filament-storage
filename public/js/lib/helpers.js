@@ -1,3 +1,8 @@
+/**
+ *
+ * @param {string} sel
+ * @returns {HTMLElement | null}
+ */
 function q(sel) {
     return document.querySelector(sel);
 }
@@ -62,12 +67,12 @@ function openSrc(e) {
 
     document.body.insertAdjacentHTML("afterbegin", dom);
 
-    const overlay = q("#overlay");
+    const overlay = q("#overlay") || never();
     overlay.onclick = () => overlay.remove();
 
-    overlay.onpaste = e => {
+    overlay.onpaste = (e) => {
         console.log(e);
-    }
+    };
 
     console.log(e);
 }
