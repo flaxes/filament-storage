@@ -7,6 +7,8 @@ module.exports = {
     lang: "en",
     serverLocale: "en-us",
 
+    domain: "http://127.0.0.1:5000",
+
     // Git
     updateFrom: "https://github.com/flaxes/filament-storage",
     updateBranch: "master",

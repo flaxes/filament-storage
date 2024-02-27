@@ -17,5 +17,5 @@ server.use((_req, res) => {
 });
 
 server.listen(config.port, () => {
-    logger.info("Filament-Server listen on", config.port, `http://127.0.0.1:${config.port}`);
+    logger.info("Filament-Server listen on", config.port, config.domain);
 });
