@@ -17,17 +17,18 @@ async function app() {
                     link: "/filaments",
                 },
                 {
-                    name: lang._header.brands,
-                    link: "/brands",
-                },
-                {
-                    name: lang._header.filamentMaterials,
-                    link: "/filament-materials",
-                },
-                {
                     name: lang._header.prints,
                     link: "/prints",
                 },
+                {
+                    name: lang._header.uploads,
+                    link: "/uploads",
+                },
+                {
+                    name: lang._header.static,
+                    link: "/static",
+                },
+
                 {
                     name: lang._header.logout,
                     link: "/logout",
@@ -38,9 +39,10 @@ async function app() {
             d.className = "header";
 
             for (const link of links) {
-                d.innerHTML += wrapTag("div", "", {}, [
-                    wrapTag("a", link.name, { class: "header-link", href: link.link }),
-                ]);
+                d.insertAdjacentHTML(
+                    "beforeend",
+                    wrapTag("div", "", {}, [wrapTag("a", link.name, { class: "header-link", href: link.link })])
+                );
 
                 // d.innerHTML += wrapTag("a", link.name, { class: "header-link", href: link.link });
             }
@@ -75,14 +77,19 @@ async function app() {
             scripts: ["/js/pages/prints.js"],
         },
 
-        "/brands": {
-            key: "_brandsPage",
-            scripts: ["/js/pages/brands.js"],
+        "/prints/card": {
+            key: "_printsPage",
+            scripts: ["/js/pages/cards/prints.card.js"],
         },
 
-        "/filament-materials": {
-            key: "_filamentMaterialsPage",
-            scripts: ["/js/pages/filament-materials.js"],
+        "/static": {
+            key: "_staticPage",
+            scripts: ["/js/pages/static.js"],
+        },
+
+        "/uploads": {
+            key: "_uploadsPage",
+            scripts: ["/js/pages/uploads.js"],
         },
 
         "/f": {

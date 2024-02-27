@@ -25,29 +25,27 @@ declare interface FilamentSettingsEntity {
     comment?: string;
 }
 
-declare interface PrintHistoryEntity {
-    filamentSettingIds: number[];
-    photoUploadsIds: number[];
-    projectUploadsIds: number[];
-    weight: number;
-    cost: number;
-}
-
 declare interface PrintEntity {
     name: string;
 
-    printedTimes: number;
+    status: "new" | "printed" | "bad" | "waiting";
 
-    projectLink?: string;
     originLink?: string;
-    history: PrintHistoryEntity[];
+
+    photoUrls?: string[];
+
+    previewFile?: string,
+    projectUploadFile?: string;
+
+    weightGramms?: number;
+    cost?: number;
 }
 
 declare interface UploadEntity {
-    name: string;
-    filePath: string;
-    extension: string;
-    size: number;
+    name?: string;
+    fileName: string;
+    mimetype: string;
+    sizeMb: number;
     isPhoto?: boolean;
 }
 
@@ -61,7 +59,7 @@ declare interface FilamentEntity {
     colorName: string;
     material: string;
     type?: string;
+    comment?: string;
 
-    settings?: FilamentSettings[];
-    prints?: PrintHistory[];
+    butLink?: string;
 }

@@ -117,22 +117,33 @@ class RepoFs extends AbstractRepo {
     /**
      *
      * @param {FindCriteria<Model<T>, keyof Model<T>>[]} criterias
+     * @param {boolean} [isStrict]
      * @returns {Promise<Model<T>[]>}
      */
-    async findByColumn(criterias) {
+    async findByColumn(criterias, isStrict) {
         const all = await this.findAll();
+
+        if (!isStrict) {
+            for (const criteria of criterias) {
+                criteria[1] = criteria[1].toLowerCase();
+            }
+        }
 
         const result = all.filter((item) => {
             for (const criteria of criterias) {
                 const val = item[criteria[0]];
-                if (!val) return false;
+                if (!val) continue;
 
-                if (!(val + "").includes(criteria[1])) {
-                    return false;
+                if (isStrict) {
+                    return val === criteria[1];
+                }
+
+                if ((val + "").toLowerCase().includes(criteria[1])) {
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         });
 
         return result;

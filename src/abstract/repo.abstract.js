@@ -64,9 +64,10 @@ class AbstractRepo {
      * @abstract
      *
      * @param {FindCriteria<T, keyof T>[]} criterias
+     * @param {boolean} [strict]
      * @returns {Promise<Model<T>[]>}
      */
-    findByColumn(criterias) {
+    findByColumn(criterias, strict) {
         return notImplemented();
     }
 

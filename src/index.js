@@ -10,13 +10,11 @@ const lang = require("./core/lang");
 const logger = createLoggerSimple("App");
 
 server.use(static("public"));
-server.get("/lang", (req, res) => {
-    res.json(lang);
-});
+server.get("/lang", (_req, res) => res.json(lang));
 server.use("/api", controllers);
 server.use((_req, res) => {
-    res.sendFile('index.html', { root: './public'});
-})
+    res.sendFile("index.html", { root: "./public" });
+});
 
 server.listen(config.port, () => {
     logger.info("Filament-Server listen on", config.port, `http://127.0.0.1:${config.port}`);

@@ -6,6 +6,10 @@ function qq(sel) {
     return document.querySelectorAll(sel);
 }
 
+const LOC_RAW_PARAMS = new URL(document.location.href).searchParams;
+// @ts-ignore
+const LOC_SEARCH = Object.fromEntries(LOC_RAW_PARAMS.entries());
+
 function dateTimeLocal(date) {
     const result = new Date(date.getTime() - date.getTimezoneOffset() * 60e3).toISOString().slice(0, -1);
 
@@ -18,10 +22,10 @@ function copyToClipboard(text) {
 
 /**
  *
- * @param {string} err
+ * @param {string} [err]
  * @returns {never}
  */
-function never(err) {
+function never(err = "never appears") {
     throw new Error(err);
 }
 
@@ -103,4 +107,36 @@ async function request(url, body, method = "POST", timeoutMs = 60000) {
     if (response.status > 399) throw new Error(json.message || json, { cause: json });
 
     return json;
+}
+
+/** @typedef {'string' | 'number' | 'date' | 'color' | 'boolean' | 'link' | 'photo'} ColumnTypePrimitive */
+/** @typedef {{ format: (value: any, data?: object) => any; unformat: (value: any) => any }} ColumnTypeFormatter */
+/** @typedef {'select'} ColumnTypeComplex */
+
+/**
+ * @typedef {ColumnTypeFormatter | ColumnTypePrimitive | { type: ColumnTypeComplex, from: string | string[], remoteName:string }} ColumnType
+ */
+
+/**
+ *
+ * @param {ColumnType} type
+ * @returns {type is ColumnTypeFormatter}
+ */
+function isColumnTypeFormatter(type) {
+    if (typeof type === "object") {
+        // @ts-ignore
+        if (type.format) return true;
+    }
+
+    return false;
+}
+
+function wrapSlicerTag(fileName, projectName, text = '') {
+    const fileLink = `${document.location.origin}/api/uploads/get/${fileName}`;
+    const extension = fileName.split(".").pop();
+
+    const file = encodeURIComponent(`${fileLink}&name=${projectName || "model"}`);
+    const url = `bambustudio://open?file=${file}.${extension}`;
+
+    return wrapTag("a", text, { href: url, class: 'fa fa-print' });
 }

@@ -23,6 +23,20 @@ class UploadRepo extends RepoService {
 
         return stream;
     }
+
+    async delete(ids) {
+        for (const id of ids) {
+            const file = await this.findById(id);
+            if (!file) continue;
+
+            const filePath = `${uploadsPath}/${file.fileName}`;
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+
+        return super.delete(ids);
+    }
 }
 
 const uploadRepo = new UploadRepo();

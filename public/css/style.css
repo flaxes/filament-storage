@@ -44,6 +44,11 @@ main {
     width: fit-content;
 }
 
+.table-outer .table-description {
+    display: flex;
+    justify-content: space-around;
+}
+
 /* .table {
 } */
 
@@ -66,6 +71,10 @@ td {
     font-weight: bold;
 }
 
+.table .photo-file-path {
+    display: none;
+}
+
 .table th {
     background-color: lightgrey;
 }
@@ -74,20 +83,44 @@ td {
     padding: 6px;
 }
 
-.table-search {
+.table-header {
     display: flex;
 }
 
-.table-search label {
+.table-header label {
     padding-top: 4px;
 }
 
-.table-search button {
+.table-header button {
     padding: 4px;
+}
+
+.table .photo {
+    display: flex;
+    flex-direction: column;
+}
+
+.table .photo input {
+    width: 60px;
+}
+
+.table img {
+    max-width: 80px;
+    max-height: 80px;
 }
 
 .card {
     width: 15%;
+}
+
+.card .photo {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.card img {
+    max-width: 300px;
+    max-height: 200px;
 }
 
 .card > label {
@@ -95,23 +128,52 @@ td {
     font-weight: bold;
 }
 
+.field-link {
+    display: flex;
+    align-items: center;
+}
+
+.field-link a {
+    padding-right: 4px;
+    text-decoration: none;
+}
+
 .card .card-field {
     padding-top: 6px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.card .card-field a {
+    color: var(--active-color);
 }
 
 .card .card-field:last-child {
     justify-content: center;
 }
 
-.card .card-field button {
+.card .hidden-label > label {
+    display: none;
+}
+
+.card .upload-form {
+    align-self: center;
+}
+
+/* .card .card-field button {
     margin: 6px;
     padding: 6px;
+} */
+
+.wrap-static {
+    display: flex;
+    justify-content: space-around;
 }
 
 :root {
     --header-color: #340049;
     --header-button-color: #5d009b;
     --header-border-color: #3f0091;
+    --active-color: #4c00da;
 }

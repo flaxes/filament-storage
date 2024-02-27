@@ -1,37 +1,33 @@
-const filamentRepo = require("../services/repo/filament.repo");
+const printRepo = require("../services/repo/print.repo");
 
 /** @type {PrintEntity[]} */
 const data = [
     {
         name: "Calibration cube",
-        printedTimes: 1,
-        projectLink:
-            "https://files.printables.com/media/prints/32539/stls/319002_e8ef6ded-289d-497b-ac65-8bbbfb04c33a/xyz-10mm-calibration-cube.stl",
         originLink: "https://www.printables.com/model/32539-xyz-10mm-calibration-cube",
-        history: [
-            {
-                cost: 750,
-                filamentSettingIds: [1, 2],
-                weight: 0.23,
-                photoUploadsIds: [1, 2],
-                projectUploadsIds: [1, 2],
-            },
-        ],
+        status: "new",
+        cost: 1000,
+        weightGramms: 50,
+        photoUrls: ["1.webp", "2.webp"],
+        previewFile: "1.webp",
+        projectUploadFile: "cube.3mf",
     },
 
     {
         name: "Rubberband Submarine",
-        printedTimes: 0,
         originLink: "https://www.printables.com/model/767909-rubberband-submarine-print-in-place",
-        history: [],
+        status: "bad",
+
+        photoUrls: ["1.webp", "2.webp"],
+
+        cost: 1000,
     },
 
     {
         name: "Test",
-        printedTimes: 0,
-        history: [],
+        status: "waiting",
     },
 ];
 
 /** @type {import("../../types/mock").MockData<PrintEntity>} */
-module.exports = { data, repo: filamentRepo };
+module.exports = { data, repo: printRepo };

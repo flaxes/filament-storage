@@ -7,6 +7,8 @@
         "prints": "Prints",
         "logout": "Logout",
         "color": "Color",
+        "static": "Static",
+        "uploads": "Uploads",
         "brand": "Brand",
         "weight": "Weight",
         "quantity": "quantity"
@@ -23,8 +25,11 @@
     "labelSearch": "Search:",
     "labelPhotos": "Photos:",
     "labelFiles": "Files:",
+    "labelCost": "Cost:",
+    "labelGramms": "Gramms:",
     "settings": "settings",
     "login": "login",
+    "download": "download",
     "password": "password",
     "used": "used",
     "count": "count",
@@ -37,6 +42,7 @@
     "update": "update",
     "create": "create",
     "kg": "kg",
+    "link": "link",
 
     "_columns": {
         "id": "ID",
@@ -50,8 +56,33 @@
         "colorName": "Color",
         "quantity": "Quantity",
         "price": "Price",
+        "print": "Print",
+        "history": "history",
         "filament": "Filament",
-        "filamentId": "Filament ID"
+        "filamentId": "Filament ID",
+        "initialNozzleTemp": "Initial nozzle temp",
+        "initialBedTemp": "Initial bed temp",
+        "nozzleTemp": "Nozzle temp",
+        "bedTemp": "Bed temp",
+        "comment": "Comment",
+        "buyLink": "Buy",
+        "flowRatio": "Flow ration",
+        "kFactor": "K factor",
+        "sizeMb": "Size MB",
+        "fileName": "File name",
+        "mimetype": "Mimetype",
+        "isPhoto": "Photo",
+        "weightGramms": "Gramms",
+        "cost": "Cost",
+        "printedName": "Print",
+        "printedTimes": "Count",
+        "projectLink": "Project link",
+        "originLink": "Origin link",
+        "status": "Status",
+        "previewFile": "Preview",
+        "openSlicer": "Open slicer",
+        "projectUploadFile": "Project",
+        "": ""
     },
 
     "_homePage": {
@@ -62,11 +93,15 @@
         "h1": "Filaments"
     },
 
-    "_filamentMaterialsPage": {
-        "h1": "Filament materials"
+    "_staticPage": {
+        "h1": "Static"
     },
 
-    "_brandsPage": {
-        "h1": "Brands"
+    "_uploadsPage": {
+        "h1": "Uploads"
+    },
+
+    "_printsPage": {
+        "h1": "Prints"
     }
 }

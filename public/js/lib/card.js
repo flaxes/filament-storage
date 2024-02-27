@@ -22,25 +22,22 @@ class CardHtml {
         this.containers = {};
         this.appendTo = appendTo;
 
-        const params = new URL(document.location.href).searchParams;
-
         if (!isNew) {
-            // @ts-ignore
-            this.search = Object.fromEntries(params.entries());
-            this.id = this.search.id || void 0;
+            this.id = LOC_SEARCH.id || void 0;
         }
 
         this.data = {};
 
-        this.card.innerHTML = wrapTag("label", `${lang._columns[entityName] || entityName} ${lang.labelCard}`);
+        this.card.insertAdjacentHTML(
+            "beforeend",
+            wrapTag("label", `${lang._columns[entityName] || entityName} ${lang.labelCard}`)
+        );
 
         if (!this.id) {
             this.dropPage();
         }
 
         this.createContainer("main");
-
-        this.init();
     }
 
     dropPage() {
@@ -64,11 +61,13 @@ class CardHtml {
      *
      * @param {string} label
      * @param {[string, string][]} fields - [name, placeholder]
+     * @param {boolean} [isPhoto]
      * @param {(files: File[], response: any) => any} [onUpload] - callback triggered with request of client and response of server
      * @param {string} [uploadUrl] - url
      */
-    createUploadForm(label, fields, onUpload, uploadUrl = "/api/uploads/create") {
+    createUploadForm(label, fields, isPhoto, onUpload, uploadUrl = "/api/uploads/upload") {
         const form = document.createElement("div");
+        form.className = 'upload-form';
 
         const inputs = [];
 
@@ -88,51 +87,57 @@ class CardHtml {
 
         inputs.push(
             wrapTag("button", "", {
-                class: "upload-form-submit fa fa-paper-plane",
+                class: "upload-form-submit fa fa-upload",
             })
         );
 
-        form.innerHTML += [wrapTag("label", label), wrapTag("div", "", { class: "upload-form" }, inputs)].join("");
-        const afterAppend = () => {
-            const sendCb = async () => {
-                const formData = new FormData();
+        if (label) {
+            form.insertAdjacentHTML("beforeend", wrapTag("label", label));
+        }
 
-                // Add a text field
-                formData.append("cdntoken", CDN_TOKEN);
+        form.insertAdjacentHTML("beforeend", inputs.join(''));
 
-                // @ts-ignore
-                const selection = await window.showOpenFilePicker({ multiple: true });
+        const sendCb = async () => {
+            const formData = new FormData();
 
-                for (const s of selection) {
-                    const file = await s.getFile();
-                    formData.append("files[]", file);
-                }
-
-                try {
-                    const response = await fetch(uploadUrl, {
-                        method: "POST",
-                        body: formData,
-                    });
-
-                    const json = await response.json();
-                    if (onUpload) {
-                        onUpload(selection, json);
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
-            };
+            // Add a text field
+            formData.append("cdntoken", CDN_TOKEN);
+            if (isPhoto) {
+                formData.append("isPhoto", "1");
+            }
 
             // @ts-ignore
-            form.querySelector("button").onclick = sendCb;
+            const selection = await window.showOpenFilePicker({ multiple: true });
+
+            for (const s of selection) {
+                const file = await s.getFile();
+                formData.append("files[]", file);
+            }
+
+            try {
+                const response = await fetch(uploadUrl, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const json = await response.json();
+                if (onUpload) {
+                    onUpload(selection, json);
+                }
+            } catch (e) {
+                console.error(e);
+            }
         };
 
-        return { form, afterAppend };
+        // @ts-ignore
+        form.querySelector("button").onclick = sendCb;
+
+        return form;
     }
 
     async renderCard() {
-        if (!this.isNew && this.search) {
-            this.data = await request(`${this.urlPath}/id/${this.search.id}`, {}, "GET");
+        if (this.id) {
+            this.data = await request(`${this.urlPath}/id/${this.id}`, {}, "GET");
 
             if (!this.data || !this.data.id) {
                 return;
@@ -141,14 +146,22 @@ class CardHtml {
 
         const entiries = [];
         for (const [column, columnType] of Object.entries(this.columns)) {
-            if (typeof columnType === "object" && columnType.from) {
-                await TableHtml.initRemoteValues(columnType.remoteName, columnType.from);
+            if (typeof columnType === "object") {
+                if (!isColumnTypeFormatter(columnType)) {
+                    await TableHtml.initRemoteValues(columnType.remoteName, columnType.from);
+                }
             }
+
+            const columnTextLang = lang._columns[column];
+            const columnText = columnTextLang ? `${columnTextLang}: ` : "";
 
             entiries.push(
                 wrapTag("div", "", { class: "card-field" }, [
-                    wrapTag("label", `${lang._columns[column]}: `, { class: "card-field-label", for: "input" }),
-                    TableHtml.formatValue(this.data[column], columnType, column),
+                    wrapTag("label", column.startsWith("_") ? "" : columnText, {
+                        class: "card-field-label",
+                        for: "input",
+                    }),
+                    TableHtml.formatValue(this.data[column], columnType, column, this.data),
                 ])
             );
         }
@@ -191,7 +204,6 @@ class CardHtml {
         document.location.reload();
     }
 
-    /** @private */
     async onSaveButton(e) {
         const newData = {};
 

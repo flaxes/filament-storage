@@ -1,17 +1,5 @@
 // @ts-check
 
-/**
- * @typedef {'string' | 'number' | 'date' | 'color' | 'boolean'} ColumnTypePrimitive
- */
-
-/**
- * @typedef {'select'} ColumnTypeComplex
- */
-
-/**
- * @typedef {ColumnTypePrimitive | { type: ColumnTypeComplex, from: string | string[], remoteName:string }} ColumnType
- */
-
 class TableHtml {
     /**
      *
@@ -32,6 +20,10 @@ class TableHtml {
         this.tableOuter = document.createElement("div");
         this.table = document.createElement("table");
 
+        /** @type {string[]} */
+        this.searchBy = [];
+        this.strictSearch = false;
+
         this.tableOuter.append(this.table);
         this.tableOuter.className = "table-outer";
         this.table.className = "table";
@@ -47,8 +39,6 @@ class TableHtml {
 
         const buttonsHtml = wrapTag("td", "", {}, buttons);
         this.buttonsHtml = buttonsHtml;
-
-        this.init();
     }
 
     /**
@@ -60,7 +50,7 @@ class TableHtml {
         if (Array.isArray(from)) {
             this.remoteValues[remoteName] = from;
         } else {
-            this.remoteValues[remoteName] = (await request(from, "", "GET")).map((item) => item.name);
+            this.remoteValues[remoteName] = (await request(from, "", "POST")).map((item) => item.name);
         }
     }
 
@@ -68,12 +58,17 @@ class TableHtml {
      * @param {any} value
      * @param {ColumnType} type
      * @param {string} column
+     * @param {object} [data]
      */
-    static formatValue(value, type, column) {
+    static formatValue(value, type, column, data) {
         if (!value) value = "";
 
         let primitiveType;
         let remoteName;
+
+        if (isColumnTypeFormatter(type)) {
+            return type.format(value, data);
+        }
 
         if (typeof type === "object") {
             primitiveType = type.type;
@@ -81,30 +76,66 @@ class TableHtml {
         } else {
             primitiveType = type;
         }
+        /** @type {Record<string,string>} */
+        const options = { name: column };
+        if (column === "name") options.autocomplete = "off";
 
         switch (primitiveType) {
             case "boolean":
-                /** @type {Record<string,string>} */
-                const options = { type: "checkbox", name: column };
+                Object.assign(options, { type: "checkbox" });
+
                 if (value) {
                     options.checked = "";
                     value = true;
                 }
 
                 return wrapTag("input", "", options);
+
             case "color":
-                return wrapTag("input", "", { type: "color", value, name: column });
+                Object.assign(options, { type: "color", value: value || "#000000" });
+                return wrapTag("input", "", options);
+
             case "date":
                 return wrapTag("input", "", {
                     type: "datetime-local",
                     value: value ? dateTimeLocal(new Date(value * 1000)) : "",
                     name: column,
                 });
+
             case "number":
-                if (column === "id") return wrapTag("span", `#${value}`, { name: column });
-                return wrapTag("input", "", { type: "number", value, name: column });
+                if (column === "id") return wrapTag("span", `#${value}`, {});
+                options.type = "number";
+                if (value !== undefined) {
+                    options.value = value;
+                }
+
+                return wrapTag("input", "", options);
+
             case "string":
-                return wrapTag("input", "", { type: "text", value, name: column });
+                Object.assign(options, {
+                    type: "text",
+                    value,
+                    name: column,
+                });
+
+                return wrapTag("input", "", options);
+
+            case "photo":
+                let src = value || "";
+                if (value) {
+                    if (!value.includes("https://")) {
+                        src = `/api/uploads/get/${value}`;
+                    }
+                    Object.assign(options, { value });
+                }
+
+                options.class = "photo-file-path";
+
+                return wrapTag("div", "", { class: "photo" }, [
+                    wrapTag("img", "", { src }),
+                    wrapTag("input", "", options),
+                ]);
+
             case "select":
                 if (!remoteName) return never(`remoteName not provided for ${column}`);
 
@@ -121,9 +152,38 @@ class TableHtml {
                     return wrapTag("option", item, elOptions);
                 });
 
-                return wrapTag("select", "", { name: column }, selectOptions);
+                return wrapTag("select", "", options, selectOptions);
+
+            case "link":
+                const link = [];
+                if (value) {
+                    const url = value.startsWith("http") ? value : `/api/uploads/get/${value}`;
+                    link.push(wrapTag("a", "", { href: url, class: "fa fa-external-link" }));
+                    options.value = value;
+                }
+
+                link.push(wrapTag("input", "", options));
+
+                return wrapTag("div", "", { class: "field-link" }, link);
+
             default:
                 throw new Error(`UNKNOWN TYPE [${type}] for ${column} (${value})`);
+        }
+    }
+
+    /**
+     *
+     * @param {ColumnType} type
+     * @param {string} value
+     */
+    toColumnType(type, value) {
+        switch (type) {
+            case "boolean":
+                return value === "true";
+            case "number":
+                return Number(value);
+            default:
+                return value;
         }
     }
 
@@ -136,10 +196,14 @@ class TableHtml {
         const value = element.value || "";
         let primitiveType;
 
+        if (isColumnTypeFormatter(type)) {
+            return type.unformat(type);
+        }
+
         if (typeof type === "object") {
             primitiveType = type.type;
         } else {
-            primitiveType = type;
+            primitiveType = type || element.type;
         }
 
         switch (primitiveType) {
@@ -153,29 +217,75 @@ class TableHtml {
 
                 return ts ? ~~(ts / 1000) : 0;
             case "number":
-                return value || 0;
+                return Number(value) || 0;
             case "string":
                 return value;
             case "select":
+                return element.value;
+            case "link":
+                return element.value;
+            case "photo":
+                // @ts-ignore
                 return element.value;
             default:
                 throw new Error(`UNKNOWN TYPE [${type}] for ${column} (${value})`);
         }
     }
 
-    /** @private */
-    createSearchEl() {
-        const searchEl = wrapTag("div", "", { class: "table-search" }, [
-            wrapTag("label", lang.labelSearch, { for: "table-search" }),
-            wrapTag("input", "", { placeholder: "", id: "table-search" }),
-            wrapTag("button", "", { class: "search-button fa fa-search" }),
-            wrapTag("button", "", { class: "create-button fa fa-plus" }),
-        ]);
+    /**
+     *
+     * @param {{ search?: boolean, create?: boolean }} [options]
+     * @param {HTMLElement} [prependTo]
+     */
+    createHeaderEl(options, prependTo) {
+        if (!options) options = { search: true, create: true };
 
-        this.appendTo.innerHTML += searchEl;
+        const headerEl = document.createElement("div");
+        headerEl.className = "table-header";
 
-        q(".table-search .create-button").onclick = (e) => this.onCreateButton(e);
-        q(".table-search .search-button").onclick = (e) => this.onSearchButton(e);
+        if (prependTo) {
+            prependTo.prepend(headerEl);
+        } else {
+            this.appendTo.append(headerEl);
+        }
+
+        if (options.search) {
+            headerEl.insertAdjacentHTML(
+                "beforeend",
+                [
+                    wrapTag("input", "", { placeholder: ". . .", class: "table-header", name: "search" }),
+                    wrapTag("button", "", { class: "search-button fa fa-search" }),
+                ].join("")
+            );
+
+            const input = headerEl.querySelector(".table-header") || never("NO INPUT");
+
+            const searchButton = headerEl.querySelector(".search-button") || never();
+            const doSearch = (e) => this.onSearchButton(e, input);
+
+            input.addEventListener("keypress", (e) => {
+                // @ts-ignore
+                if (e.key === "Enter") {
+                    // e.preventDefault();
+                    doSearch(e);
+                }
+            });
+
+            if (LOC_SEARCH.s) {
+                // @ts-ignore
+                input.value = LOC_SEARCH.s;
+            }
+
+            // @ts-ignore
+            searchButton.onclick = (e) => this.onSearchButton(e, input);
+        }
+
+        if (options.create) {
+            headerEl.insertAdjacentHTML("beforeend", wrapTag("button", "", { class: "create-button fa fa-plus" }));
+
+            // @ts-ignore
+            headerEl.querySelector(".create-button").onclick = (e) => this.onCreateButton(e);
+        }
     }
 
     async createRow(row) {
@@ -190,10 +300,10 @@ class TableHtml {
             const type = this.columns[column];
             const val = row[column];
 
-            element.innerHTML += `<td>${await TableHtml.formatValue(val, type, column)}</td>`;
+            element.insertAdjacentHTML("beforeend", `<td>${await TableHtml.formatValue(val, type, column)}</td>`);
         }
 
-        element.innerHTML += this.buttonsHtml + "</tr>";
+        element.insertAdjacentHTML("beforeend", this.buttonsHtml + "</tr>");
 
         const afterAppend = () => {
             const openButton = element.querySelector(".open-button");
@@ -215,31 +325,61 @@ class TableHtml {
         return { element, afterAppend };
     }
 
-    async init() {
-        this.createSearchEl();
+    init(search) {
+        return this.initUnsafe(search).catch(console.error);
+    }
+
+    async fetchData(search) {
+        const searchBody = {
+            strict: this.strictSearch,
+        };
+
+        if (search) {
+            searchBody.search = search;
+        } else if (typeof LOC_SEARCH.s === "string") {
+            if (LOC_SEARCH.s.includes(":")) {
+                const [column, val] = LOC_SEARCH.s.split(":");
+
+                searchBody.search = [[column, this.toColumnType(this.columns[column], val.trim())]];
+                searchBody.strict = true;
+            } else {
+                searchBody.search = this.searchBy.map((item) => [item, LOC_SEARCH.s]);
+            }
+        }
+
+        const data = await request(this.urlPath, searchBody, "POST");
+
+        return data;
+    }
+
+    /** @private */
+    async initUnsafe(search) {
         const columnsTr = document.createElement("tr");
 
         const remoteInitPromises = [];
 
         for (const column in this.columns) {
             const th = document.createElement("th");
-            th.innerText = lang._columns[column] || `?${column}?`;
+            let columnText = lang._columns[column];
+            if (typeof columnText === undefined) columnText = `?${column}?`;
+
+            th.innerText = columnText;
             const columnType = this.columns[column];
 
-            if (typeof columnType === "object" && columnType.from) {
+            if (typeof columnType === "object" && !isColumnTypeFormatter(columnType)) {
                 remoteInitPromises.push(TableHtml.initRemoteValues(columnType.remoteName, columnType.from));
             }
 
             columnsTr.append(th);
         }
 
-        columnsTr.innerHTML += wrapTag("th", lang.labelActions);
+        columnsTr.insertAdjacentHTML("beforeend", wrapTag("th", lang.labelActions));
 
         await Promise.all(remoteInitPromises);
 
         this.table.append(columnsTr);
 
-        const data = await request(this.urlPath, null, "GET");
+        const data = await this.fetchData(search);
 
         for (let i = data.length - 1; i >= 0; i--) {
             const row = data[i];
@@ -247,12 +387,16 @@ class TableHtml {
 
             const { afterAppend, element } = await this.createRow(row);
 
+            this.onInitData(row);
+
             this.table.append(element);
             afterAppend();
         }
 
         this.appendTo.append(this.tableOuter);
     }
+
+    onInitData(data) {}
 
     /** @private */
     async onDeleteButton(e) {
@@ -269,7 +413,6 @@ class TableHtml {
         element.remove();
     }
 
-    /** @private */
     onOpenButton(e) {
         const { id } = this.getDataFromE(e);
         let url = document.location.pathname;
@@ -280,14 +423,15 @@ class TableHtml {
     }
 
     /** @private */
-    onSearchButton(e) {
-        console.log(e.target.parentElement);
+    onSearchButton(_e, input) {
+        window.location.search = input.value ? `s=${input.value}` : "";
     }
 
     /** @private */
     async onSaveButton(e) {
         const { element, id } = this.getDataFromE(e);
         const newData = {};
+
         element.querySelectorAll("input,select").forEach(
             /** @param {HTMLInputElement | HTMLSelectElement} input */ // @ts-ignore
             (input) => {
@@ -321,7 +465,6 @@ class TableHtml {
         afterAppend();
     }
 
-    /** @private */
     getDataFromE(e) {
         /** @type {Element} */
         const element = e.target.parentElement.parentElement;

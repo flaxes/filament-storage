@@ -1,28 +1,24 @@
-const { Router, json } = require("express");
+const { Router } = require("express");
 const AbstractRepo = require("../abstract/repo.abstract");
-const { invalidRequest } = require("./http-exceptions");
+const bodyParserMiddleware = require("../middlewares/body-parser.middleware");
 
 /**
  * @param {AbstractRepo<any>} repo
+ * @param {{ beforeDelete?: (ids) => Promise<any> }} events
  */
-const crudController = (repo) => {
+const crudController = (repo, events = {}) => {
     const router = Router();
 
-    router.get("/", async (_req, res) => {
-        res.json(await repo.findAll());
+    router.use(bodyParserMiddleware);
+    router.post("/", async (req, res) => {
+        const promise = req.body.search ? repo.findByColumn(req.body.search, req.body.strict) : repo.findAll();
+
+        res.json(await promise);
     });
     router.get("/id/:id", async (req, res) => {
         const result = await repo.findById(Number(req.params.id));
 
         res.json(result || { error: "not found" });
-    });
-
-    router.use(json({ limit: "1mb" }));
-    router.get("/find", async (req, res, next) => {
-        if (!Array.isArray(req.query)) return next(invalidRequest);
-
-        // @ts-ignore
-        res.json(await repo.findByColumn(req.query.s));
     });
 
     router.post("/create", async (req, res) => {
@@ -38,7 +34,10 @@ const crudController = (repo) => {
     });
 
     router.post("/delete", async (req, res) => {
-        res.json({ count: await repo.delete(req.body.ids) });
+        const { ids } = req.body;
+        if (events.beforeDelete) await events.beforeDelete(ids);
+
+        res.json({ count: await repo.delete(ids) });
     });
 
     return router;

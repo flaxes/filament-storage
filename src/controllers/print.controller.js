@@ -1,6 +1,6 @@
 const crudController = require("../core/crud.controller");
-const printHistoryRepo = require("../services/repo/print-history.repo");
+const printRepo = require("../services/repo/print.repo");
 
-const printController = crudController(printHistoryRepo);
+const printController = crudController(printRepo);
 
 module.exports = printController;
