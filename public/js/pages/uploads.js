@@ -5,7 +5,7 @@
         "/api/uploads",
         {
             id: "number",
-            fileName: "string",
+            fileName: "link",
             sizeMb: "number",
             isPhoto: "boolean",
             name: "string",

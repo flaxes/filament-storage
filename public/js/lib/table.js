@@ -132,7 +132,7 @@ class TableHtml {
                 options.class = "photo-file-path";
 
                 return wrapTag("div", "", { class: "photo" }, [
-                    wrapTag("img", "", { src }),
+                    wrapTag("img", "", { src, onclick: "openSrc(this)" }),
                     wrapTag("input", "", options),
                 ]);
 

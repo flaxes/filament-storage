@@ -4,6 +4,7 @@
     const table = new TableHtml(
         "/api/prints",
         {
+            previewFile: "photo",
             id: 'number',
             name: "string",
 
@@ -15,7 +16,6 @@
 
             originLink: "link",
 
-            previewFile: "photo",
             projectUploadFile: "link",
             openSlicer: {
                 format: (_, data = {}) => {

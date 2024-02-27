@@ -30,6 +30,11 @@ async function app() {
                 },
 
                 {
+                    name: lang._header.admin,
+                    link: "/admin",
+                },
+
+                {
                     name: lang._header.logout,
                     link: "/logout",
                 },
@@ -58,8 +63,9 @@ async function app() {
         },
 
         "/": {
-            key: "_homePage",
-            scripts: ["/js/pages/home.js"],
+            redirect: "/filaments",
+            /* key: "_homePage",
+            scripts: ["/js/pages/home.js"], */
         },
 
         "/filaments": {
@@ -90,6 +96,11 @@ async function app() {
         "/uploads": {
             key: "_uploadsPage",
             scripts: ["/js/pages/uploads.js"],
+        },
+
+        "/admin": {
+            key: "_adminPage",
+            scripts: ["/js/pages/admin.js"],
         },
 
         "/f": {

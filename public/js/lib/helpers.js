@@ -57,6 +57,21 @@ function wrapTag(tag, text, props, elements) {
     return html;
 }
 
+function openSrc(e) {
+    const dom = wrapTag("div", "", { class: "fullscreen", id: "overlay" }, [wrapTag("img", "", { src: e.src })]);
+
+    document.body.insertAdjacentHTML("afterbegin", dom);
+
+    const overlay = q("#overlay");
+    overlay.onclick = () => overlay.remove();
+
+    overlay.onpaste = e => {
+        console.log(e);
+    }
+
+    console.log(e);
+}
+
 /**
  *
  * @param {string} url
@@ -131,12 +146,12 @@ function isColumnTypeFormatter(type) {
     return false;
 }
 
-function wrapSlicerTag(fileName, projectName, text = '') {
+function wrapSlicerTag(fileName, projectName, text = "") {
     const fileLink = `${document.location.origin}/api/uploads/get/${fileName}`;
     const extension = fileName.split(".").pop();
 
     const file = encodeURIComponent(`${fileLink}&name=${projectName || "model"}`);
     const url = `bambustudio://open?file=${file}.${extension}`;
 
-    return wrapTag("a", text, { href: url, class: 'fa fa-print' });
+    return wrapTag("a", text, { href: url, class: "fa fa-print" });
 }

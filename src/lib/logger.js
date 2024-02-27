@@ -1,3 +1,5 @@
+const { serverLocale } = require("../../config");
+
 /**
  *
  * @param {string} namespace
@@ -6,7 +8,7 @@
 const createLoggerSimple = (namespace) => {
     const logger = new Proxy(console, {
         get: (console, method) => {
-            const time = new Date().toLocaleString("ua-UA");
+            const time = new Date().toLocaleString(serverLocale);
 
             // @ts-ignore. Convert symbol to string
             return console[method].bind(console, `${time}`, `[${namespace}]`, `[${method}]`);

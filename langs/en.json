@@ -11,7 +11,8 @@
         "uploads": "Uploads",
         "brand": "Brand",
         "weight": "Weight",
-        "quantity": "quantity"
+        "quantity": "quantity",
+        "admin": "Admin"
     },
 
     "actionDelete": "Del",
@@ -19,6 +20,8 @@
     "actionSave": "Save",
     "actionSearch": "Search",
     "actionSubmit": "Submit",
+    "actionUpdate": "Update",
+
     "promptAreYouSure": "Are you sure?",
     "labelActions": "Actions",
     "labelCard": "Card:",
@@ -27,6 +30,9 @@
     "labelFiles": "Files:",
     "labelCost": "Cost:",
     "labelGramms": "Gramms:",
+    "labelVersion": "Version:",
+    "current": "current",
+    "last": "last",
     "settings": "settings",
     "login": "login",
     "download": "download",
@@ -103,5 +109,11 @@
 
     "_printsPage": {
         "h1": "Prints"
+    },
+
+    "_adminPage": {
+        "h1": "Admin",
+        "update": "Update",
+        "logs": "Logs:"
     }
 }

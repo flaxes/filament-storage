@@ -6,6 +6,7 @@ const filamentSettingsController = require("./filament-settings.controller");
 const filamentController = require("./filament.controller");
 const uploadController = require("./uploads.controller");
 const printController = require("./print.controller");
+const adminController = require("./admin.controller");
 
 const controllers = Router();
 
@@ -15,6 +16,7 @@ controllers.use("/filament-materials", filamentMaterialController);
 controllers.use("/filaments", filamentController);
 controllers.use("/prints", printController);
 controllers.use("/uploads", uploadController);
+controllers.use("/admin", adminController);
 
 controllers.use(errorHandlerMiddleware);
 
