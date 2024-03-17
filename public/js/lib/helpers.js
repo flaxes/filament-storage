@@ -214,6 +214,8 @@ const FAuth = (function () {
         return {};
     };
 
+    this.updateAuthPromise = null;
+
     this.login = async (username, password, errorEl) => {
         const result = await createRequest("/api/auth/login", { username, password }, "POST").catch((err) => {
             if (err.error) return err;
@@ -238,15 +240,19 @@ const FAuth = (function () {
         return true;
     };
 
-    this.updateAuth = async (token) => {
-        const result = await createRequest("/api/auth/refresh", { token });
+    this.updateAuth = (token) => {
+        if (this.updateAuthPromise) return this.updateAuthPromise;
 
-        if (result) {
-            this.setAuth(result);
-            return true;
-        }
+        this.updateAuthPromise = createRequest("/api/auth/refresh", { token }).then((result) => {
+            if (result) {
+                this.setAuth(result);
+                return true;
+            }
 
-        return false;
+            this.resetAuth(true);
+            this.updateAuthPromise = null;
+            return false;
+        });
     };
 
     this.getAuth = async (withoutRedirect) => {
@@ -299,7 +305,6 @@ const FAuth = (function () {
         }
 
         localStorage.removeItem(this.storageKey);
-
         return this.gotoLogin();
     };
 
