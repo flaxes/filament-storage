@@ -187,9 +187,23 @@ td {
     padding: 6px;
 } */
 
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form input {
+    width: 120px;
+    margin-bottom: 8px;
+}
+
 .wrap-static {
     display: flex;
     justify-content: space-around;
+}
+
+.danger-text {
+    color: var(--danger-color);
 }
 
 :root {
@@ -197,4 +211,5 @@ td {
     --header-button-color: #5d009b;
     --header-border-color: #3f0091;
     --active-color: #4c00da;
+    --danger-color: #df3b3b;
 }

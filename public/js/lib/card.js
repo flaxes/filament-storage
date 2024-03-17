@@ -59,13 +59,13 @@ class CardHtml {
 
     /**
      *
-     * @param {string} label
      * @param {[string, string][]} fields - [name, placeholder]
+     * @param {string} [label]
      * @param {boolean} [isPhoto]
      * @param {(files: File[], response: any) => any} [onUpload] - callback triggered with request of client and response of server
      * @param {string} [uploadUrl] - url
      */
-    createUploadForm(label, fields, isPhoto, onUpload, uploadUrl = "/api/uploads/upload") {
+    createUploadForm(fields, label, isPhoto, onUpload, uploadUrl = "/api/uploads/upload") {
         const form = document.createElement("div");
         form.className = 'upload-form';
 

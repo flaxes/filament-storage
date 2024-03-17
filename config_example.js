@@ -1,11 +1,19 @@
 module.exports = {
     port: 5000,
-    allowedIp: "127.0.0",
+    // 10 hours
+    sessionTtlMinutes: 600,
+
+    security: {
+        whitelistGeo: ["GB"],
+        geoHeader: "x-geo-iso",
+        allowAnyLocal: true,
+    },
+
     repoPath: "./storage",
     uploadsPath: "./uploads",
 
     lang: "en",
-    serverLocale: "en-us",
+    serverLocale: "ua-ua",
 
     domain: "http://127.0.0.1:5000",
 
@@ -15,4 +23,6 @@ module.exports = {
     updateManifest: "https://raw.githubusercontent.com/flaxes/filament-storage/master/package.json",
 
     DEBUG: true,
+
+    //allowedIp: "192.168",
 };

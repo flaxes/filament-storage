@@ -1,6 +1,7 @@
 // @ts-check
 /** @type {import('../langs/en.json')} */ // @ts-ignore
 const lang = {};
+
 const main = document.querySelector("main") || never("NO MAIN");
 let CDN_TOKEN = "???";
 
@@ -36,7 +37,7 @@ async function app() {
 
                 {
                     name: lang._header.logout,
-                    link: "/logout",
+                    script: "FAuth.resetAuth()",
                 },
             ];
 
@@ -44,10 +45,12 @@ async function app() {
             d.className = "header";
 
             for (const link of links) {
-                d.insertAdjacentHTML(
-                    "beforeend",
-                    wrapTag("div", "", {}, [wrapTag("a", link.name, { class: "header-link", href: link.link })])
-                );
+                const options = { class: "header-link" };
+
+                options.href = link.link || "#";
+                if (link.script) options.onclick = link.script;
+
+                d.insertAdjacentHTML("beforeend", wrapTag("div", "", {}, [wrapTag("a", link.name, options)]));
 
                 // d.innerHTML += wrapTag("a", link.name, { class: "header-link", href: link.link });
             }
@@ -60,6 +63,7 @@ async function app() {
         "/login": {
             key: "_loginPage",
             scripts: ["/js/pages/login.js"],
+            noheader: true,
         },
 
         "/": {
@@ -109,9 +113,7 @@ async function app() {
     };
 
     // Setup lang
-    Object.assign(lang, await request("/lang", null, "GET"));
-
-    render.header();
+    Object.assign(lang, await createRequest("/lang", null, "GET"));
 
     const headTitle = document.querySelector("head > title");
     const pageName = document.location.pathname;
@@ -126,7 +128,13 @@ async function app() {
 
         main.append(d);
 
+        setTimeout(() => (window.location.pathname = "/"), 5e3);
+
         return;
+    }
+
+    if (!PAGE.noheader) {
+        render.header();
     }
 
     if (PAGE.redirect) {

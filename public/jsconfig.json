@@ -6,8 +6,11 @@
         "checkJs": true,
         "strictNullChecks": true,
         "skipLibCheck": true,
+        "esModuleInterop": true,
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
         "outDir": "./build"
     },
-    "include": ["**/*"],
+    "include": ["**/*", "../langs/en.json"],
     "exclude": ["build"]
 }

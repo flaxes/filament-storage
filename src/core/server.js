@@ -11,12 +11,10 @@ server.use(
         contentSecurityPolicy: false,
         strictTransportSecurity: false,
         crossOriginOpenerPolicy: false,
-        originAgentCluster: false
+        originAgentCluster: false,
     })
 );
-server.use((req, res, next) => {
-    next();
-});
-// server.use(security);
+
+server.use(security);
 
 module.exports = server;

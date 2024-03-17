@@ -95,6 +95,13 @@
         "h1": "Dashboard"
     },
 
+    "_loginPage": {
+        "h1": "Log into storage",
+        "username": "Username:",
+        "password": "Password:",
+        "login": "Login"
+    },
+
     "_filamentsPage": {
         "h1": "Filaments"
     },

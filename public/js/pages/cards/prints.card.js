@@ -44,7 +44,7 @@
 
     // Append uploader for project
     const projectFileDom = printCard.card.querySelector('[name="projectUploadFile"]') || never();
-    const projectFileUploadDom = printCard.createUploadForm("", [], false, (_files, response) => {
+    const projectFileUploadDom = printCard.createUploadForm([], void 0, false, (_files, response) => {
         const [file] = response;
         // @ts-ignore
         projectFileDom.value = file.fileName;
@@ -59,7 +59,7 @@
     // @ts-ignore
     previewFileDom.parentElement.parentElement.classList.add('hidden-label');
 
-    const previewUploadForm = printCard.createUploadForm(lang.preview, [], true, (_files, response) => {
+    const previewUploadForm = printCard.createUploadForm([], void 0, true, (_files, response) => {
         const [file] = response;
         // @ts-ignore
         previewFileDom.value = file.fileName;

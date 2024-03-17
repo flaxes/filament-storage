@@ -6,7 +6,15 @@ const { notImplemented } = require("../lib/helpers");
  * @template T
  */
 class AbstractRepo {
+    static repoList = new Set();
+
     constructor(table) {
+        if (AbstractRepo.repoList.has(table)) {
+            throw new Error(`${table} is already created!`);
+        }
+
+        AbstractRepo.repoList.add(table);
+
         /** @readonly */
         this.table = table;
     }
@@ -14,7 +22,7 @@ class AbstractRepo {
     /**
      * @abstract
      *
-     * @param {Exclude<T, 'id'>[]} objects
+     * @param {T[]} objects
      * @returns {Promise<T[]>}
      */
     create(objects) {

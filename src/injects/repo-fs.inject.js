@@ -27,15 +27,18 @@ class RepoFs extends AbstractRepo {
 
     /**
      *
-     * @param {Exclude<T, 'id'>[]} objects
+     * @param {T[]} objects
+     * @param {number} [creatorId]
      * @returns {Promise<Model<T>[]>}
      */
-    async create(objects) {
+    async create(objects, creatorId) {
         /** @type {Model<T>[]} */
         const result = [];
         for (const object of objects) {
             /** @type {Model<T>} */ // @ts-ignore
             const o = object;
+
+            o.creatorId = creatorId;
 
             o.id = ++this.store.lastIndex;
             o.createdAt = getNowSeconds();
@@ -102,7 +105,10 @@ class RepoFs extends AbstractRepo {
             }
         }
 
-        this.save();
+        if (count) {
+            this.save();
+        }
+
         return count;
     }
 
@@ -117,7 +123,7 @@ class RepoFs extends AbstractRepo {
     /**
      *
      * @param {FindCriteria<Model<T>, keyof Model<T>>[]} criterias
-     * @param {boolean} [isStrict]
+     * @param {boolean} [isStrict] - ignore cases
      * @returns {Promise<Model<T>[]>}
      */
     async findByColumn(criterias, isStrict) {

@@ -451,10 +451,13 @@ class TableHtml {
             // const result =
             await request(`${this.urlPath}/update`, requestBody, "POST");
         } else {
-            await request(`${this.urlPath}/create`, requestBody, "POST");
+            const [res] = await request(`${this.urlPath}/create`, requestBody, "POST");
+            // @ts-ignore
+            element.dataset.id = res.id;
+            this.data[res.id] = res;
         }
 
-        document.location.reload();
+        // document.location.reload();
     }
 
     async onCreateButton(e) {

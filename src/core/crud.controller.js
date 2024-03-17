@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const AbstractRepo = require("../abstract/repo.abstract");
-const bodyParserMiddleware = require("../middlewares/body-parser.middleware");
 
 /**
  * @param {AbstractRepo<any>} repo
@@ -9,7 +8,6 @@ const bodyParserMiddleware = require("../middlewares/body-parser.middleware");
 const crudController = (repo, events = {}) => {
     const router = Router();
 
-    router.use(bodyParserMiddleware);
     router.post("/", async (req, res) => {
         const promise = req.body.search ? repo.findByColumn(req.body.search, req.body.strict) : repo.findAll();
 

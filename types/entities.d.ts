@@ -10,6 +10,19 @@ declare interface BrandEntity {
     name: string;
 }
 
+declare interface SessionEntity {
+    token: string;
+    /** timestamp */
+    expireAt: number;
+    ip: string;
+}
+
+declare interface UserEntity {
+    username: string;
+    hash: string;
+    salt: string;
+}
+
 declare interface FilamentSettingsEntity {
     name: string;
     filamentId: number;
