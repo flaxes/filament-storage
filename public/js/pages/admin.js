@@ -37,7 +37,7 @@
     ]);
 
     wrap.insertAdjacentHTML("beforeend", updateDom);
-    q("#admin-update-button").onclick = async () => {
+    qStrict("#admin-update-button").onclick = async () => {
         await request("/api/admin/version-update", {}, "POST");
 
         setTimeout(() => {

@@ -18,26 +18,31 @@
         ])
     );
 
-    // @ts-ignore
-    const getVal = (sel) => qStrict(sel).value;
+    const usernameEl = qStrict("#username", HTMLInputElement);
+    const passwordEl = qStrict("#password", HTMLInputElement);
 
     const loginErrorEl = qStrict("#login-error");
     const gotoHome = () => (window.location.pathname = "/");
 
-    FAuth.getAuth(true).then((data) => {
-        // if (data) return gotoHome();
+    fauth.getAuth().then((data) => {
+        if (data) {
+            console.info('session found. skip login', data)
+            return gotoHome();
+        }
     });
 
-    qStrict("#login").onclick = async (e) => {
+    const cb = async (e) => {
         e.preventDefault();
 
-        const username = getVal("#username");
-        const password = getVal("#password");
-
-        const isSuccess = await FAuth.login(username, password, loginErrorEl);
+        const isSuccess = await fauth.login(usernameEl.value, passwordEl.value, loginErrorEl);
 
         if (isSuccess) {
             gotoHome();
         }
     };
+
+    enterEvent(usernameEl, cb);
+    enterEvent(passwordEl, cb);
+
+    qStrict("#login").onclick = cb;
 })();

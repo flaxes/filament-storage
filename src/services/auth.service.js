@@ -10,7 +10,11 @@ class AuthService {
     }
 
     createToken() {
-        return { token: crypto.randomUUID(), expireAt: Date.now() + sessionTtlMinutes * 60e3 };
+        const token = crypto.randomUUID();
+        const expireAt = Date.now() + sessionTtlMinutes * 60e3;
+        const fileToken = randomString(8);
+
+        return { token, expireAt, fileToken };
     }
 
     /**
@@ -51,8 +55,8 @@ class AuthService {
 
         await sessionRepo.delete(oldIds);
 
-        const { expireAt, token } = this.createToken();
-        const [newSession] = await sessionRepo.create([{ expireAt, ip, token }], user.id);
+        const { expireAt, token, fileToken } = this.createToken();
+        const [newSession] = await sessionRepo.create([{ expireAt, ip, token, fileToken }], user.id);
 
         return newSession;
     }
@@ -72,8 +76,8 @@ class AuthService {
 
         await sessionRepo.delete([session.id]);
 
-        const { expireAt, token } = this.createToken();
-        const [newSession] = await sessionRepo.create([{ expireAt, ip, token }], session.creatorId);
+        const { expireAt, token, fileToken } = this.createToken();
+        const [newSession] = await sessionRepo.create([{ expireAt, ip, token, fileToken }], session.creatorId);
 
         return newSession;
     }
@@ -104,6 +108,20 @@ class AuthService {
         if (!user) return;
 
         return { id: user.id, username: user.username, sessionId: session.id };
+    }
+
+    async isFileTokenValid(fileToken) {
+        const [session] = await sessionRepo.findByColumn([["fileToken", fileToken]]);
+
+        if (!session) return false;
+
+        const now = Date.now();
+        if (now >= session.expireAt || !session.creatorId) {
+            await sessionRepo.delete([session.id]);
+            return false;
+        }
+
+        return true;
     }
 }
 

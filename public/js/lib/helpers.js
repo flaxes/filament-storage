@@ -8,15 +8,17 @@ function q(sel) {
 }
 
 /**
- *
+ * @template T
  * @param {string} sel
- * @returns {HTMLElement}
+ * @param {T} [type]
+ * @returns {InstanceType<T>}
  */
-function qStrict(sel) {
+function qStrict(sel, type) {
     const el = q(sel);
 
     if (!el) throw new Error(`NO ELEMENT ${sel}`);
 
+    // @ts-ignore
     return el;
 }
 
@@ -75,6 +77,10 @@ function wrapTag(tag, text, props, elements) {
     return html;
 }
 
+function filePostfix() {
+    return `_=${fauth.getFileToken()}`;
+}
+
 function openSrc(e) {
     const dom = wrapTag("div", "", { class: "fullscreen", id: "overlay" }, [wrapTag("img", "", { src: e.src })]);
 
@@ -82,12 +88,6 @@ function openSrc(e) {
 
     const overlay = q("#overlay") || never();
     overlay.onclick = () => overlay.remove();
-
-    overlay.onpaste = (e) => {
-        console.log(e);
-    };
-
-    console.log(e);
 }
 
 /**
@@ -143,7 +143,7 @@ async function createRequest(url, body, method = "POST", timeoutMs = 60000, head
         console.log(response.status);
         if (response.status === 401) {
             console.warn("NO AUTH!");
-            await FAuth.resetAuth();
+            await fauth.resetAuth();
 
             return;
         }
@@ -165,9 +165,10 @@ async function createRequest(url, body, method = "POST", timeoutMs = 60000, head
  * @returns
  */
 async function request(url, body, method = "POST", timeoutMs = 60000) {
-    const auth = await FAuth.getAuth();
+    const headers = await fauth.getAuthHeaders();
 
-    const headers = { token: auth.token };
+    if (!headers) {
+    }
 
     return createRequest(url, body, method, timeoutMs, headers);
 }
@@ -195,7 +196,7 @@ function isColumnTypeFormatter(type) {
 }
 
 function wrapSlicerTag(fileName, projectName, text = "") {
-    const fileLink = `${document.location.origin}/api/uploads/get/${fileName}`;
+    const fileLink = `${document.location.origin}/api/uploads/get/${fileName}?${filePostfix()}`;
     const extension = fileName.split(".").pop();
 
     const file = encodeURIComponent(`${fileLink}&name=${projectName || "model"}`);
@@ -204,109 +205,10 @@ function wrapSlicerTag(fileName, projectName, text = "") {
     return wrapTag("a", text, { href: url, class: "fa fa-print" });
 }
 
-const FAuth = (function () {
-    this.storageKey = "_auth_";
-    this.authData = null;
-
-    this.gotoLogin = () => {
-        window.location.pathname = "/login";
-
-        return {};
-    };
-
-    this.updateAuthPromise = null;
-
-    this.login = async (username, password, errorEl) => {
-        const result = await createRequest("/api/auth/login", { username, password }, "POST").catch((err) => {
-            if (err.error) return err;
-
-            return { error: err };
-        });
-
-        console.log(result);
-
-        if (result.error) {
-            if (errorEl) {
-                errorEl.innerText = result.error;
-                errorEl.removeAttribute("hidden");
-            }
-
-            console.error(result);
-            return false;
+function enterEvent(el, cb) {
+    el.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            cb(e);
         }
-
-        this.setAuth(result);
-
-        return true;
-    };
-
-    this.updateAuth = (token) => {
-        if (this.updateAuthPromise) return this.updateAuthPromise;
-
-        this.updateAuthPromise = createRequest("/api/auth/refresh", { token }).then((result) => {
-            if (result) {
-                this.setAuth(result);
-                return true;
-            }
-
-            this.resetAuth(true);
-            this.updateAuthPromise = null;
-            return false;
-        });
-    };
-
-    this.getAuth = async (withoutRedirect) => {
-        if (!this.authData) {
-            const data = localStorage.getItem(this.storageKey);
-            if (data) {
-                const json = JSON.parse(data);
-
-                if (json) {
-                    this.authData = json;
-                    return this.getAuth(withoutRedirect);
-                }
-            }
-
-            if (!withoutRedirect) {
-                return this.gotoLogin();
-            }
-
-            return;
-        }
-
-        const now = Date.now();
-        const { expireAt, token } = this.authData;
-        // before 30 minutes
-        const updateTokenAt = expireAt - 30 * 60e3;
-
-        if (now >= expireAt) {
-            return this.gotoLogin();
-        }
-
-        if (now >= updateTokenAt) {
-            await this.updateAuth(token);
-        }
-
-        return this.authData;
-    };
-
-    this.setAuth = (data) => {
-        this.authData = data;
-        return localStorage.setItem(this.storageKey, JSON.stringify(data));
-    };
-
-    this.resetAuth = async (skipRemote) => {
-        if (this.authData) {
-            if (!skipRemote) {
-                await createRequest("/api/auth/logout", { token: this.authData.token }, "POST", 2e3).catch((err) => {
-                    console.error(err);
-                });
-            }
-        }
-
-        localStorage.removeItem(this.storageKey);
-        return this.gotoLogin();
-    };
-
-    return this;
-})();
+    });
+}

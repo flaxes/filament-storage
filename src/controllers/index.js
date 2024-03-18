@@ -10,6 +10,8 @@ const adminController = require("./admin.controller");
 const authController = require("./auth.controller");
 const bodyParserMiddleware = require("../middlewares/body-parser.middleware");
 const authMiddleware = require("../middlewares/auth.middleware");
+const uploadGDriveController = require("./uploads-gdrive.controller");
+const { google } = require("../../config");
 
 const controllers = Router();
 
@@ -23,7 +25,14 @@ controllers.use("/filament-settings", filamentSettingsController);
 controllers.use("/filament-materials", filamentMaterialController);
 controllers.use("/filaments", filamentController);
 controllers.use("/prints", printController);
-controllers.use("/uploads", uploadController);
+
+if (google.isEnabled) {
+    controllers.use("/uploads", uploadGDriveController);
+} else {
+    controllers.use("/uploads", uploadController);
+}
+
+//
 controllers.use("/admin", adminController);
 
 controllers.use((_req, res) => {

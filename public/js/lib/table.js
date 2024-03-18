@@ -124,7 +124,7 @@ class TableHtml {
                 let src = value || "";
                 if (value) {
                     if (!value.includes("https://")) {
-                        src = `/api/uploads/get/${value}`;
+                        src = `/api/uploads/get/${value}?${filePostfix()}`;
                     }
                     Object.assign(options, { value });
                 }
@@ -157,8 +157,18 @@ class TableHtml {
             case "link":
                 const link = [];
                 if (value) {
-                    const url = value.startsWith("http") ? value : `/api/uploads/get/${value}`;
-                    link.push(wrapTag("a", "", { href: url, class: "fa fa-external-link" }));
+                    const isExternal = value.startsWith("http");
+                    let url, linkClass;
+
+                    if (isExternal) {
+                        url = value;
+                        linkClass = "fa fa-external-link";
+                    } else {
+                        url = `/api/uploads/get/${value}?${filePostfix()}`;
+                        linkClass = "fa fa-download";
+                    }
+
+                    link.push(wrapTag("a", "", { href: url, class: linkClass }));
                     options.value = value;
                 }
 
@@ -262,14 +272,7 @@ class TableHtml {
 
             const searchButton = headerEl.querySelector(".search-button") || never();
             const doSearch = (e) => this.onSearchButton(e, input);
-
-            input.addEventListener("keypress", (e) => {
-                // @ts-ignore
-                if (e.key === "Enter") {
-                    // e.preventDefault();
-                    doSearch(e);
-                }
-            });
+            enterEvent(input, doSearch);
 
             if (LOC_SEARCH.s) {
                 // @ts-ignore

@@ -67,7 +67,7 @@ class CardHtml {
      */
     createUploadForm(fields, label, isPhoto, onUpload, uploadUrl = "/api/uploads/upload") {
         const form = document.createElement("div");
-        form.className = 'upload-form';
+        form.className = "upload-form";
 
         const inputs = [];
 
@@ -95,9 +95,10 @@ class CardHtml {
             form.insertAdjacentHTML("beforeend", wrapTag("label", label));
         }
 
-        form.insertAdjacentHTML("beforeend", inputs.join(''));
+        form.insertAdjacentHTML("beforeend", inputs.join(""));
 
         const sendCb = async () => {
+            const headers = await fauth.getAuthHeaders();
             const formData = new FormData();
 
             // Add a text field
@@ -118,6 +119,7 @@ class CardHtml {
                 const response = await fetch(uploadUrl, {
                     method: "POST",
                     body: formData,
+                    headers,
                 });
 
                 const json = await response.json();

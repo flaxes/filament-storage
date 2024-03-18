@@ -37,7 +37,7 @@ async function app() {
 
                 {
                     name: lang._header.logout,
-                    script: "FAuth.resetAuth()",
+                    script: "fauth.resetAuth()",
                 },
             ];
 

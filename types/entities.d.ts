@@ -12,6 +12,7 @@ declare interface BrandEntity {
 
 declare interface SessionEntity {
     token: string;
+    fileToken: string;
     /** timestamp */
     expireAt: number;
     ip: string;
@@ -56,6 +57,7 @@ declare interface PrintEntity {
 
 declare interface UploadEntity {
     name?: string;
+    gdriveId?: string;
     fileName: string;
     mimetype: string;
     sizeMb: number;
