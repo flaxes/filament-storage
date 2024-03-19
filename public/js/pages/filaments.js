@@ -11,6 +11,8 @@
             type: "string",
             colorName: "string",
             quantity: "number",
+            weightGramms: "number",
+            priceUah: "number",
             name: "string",
             comment: "string",
             buyLink: "link",

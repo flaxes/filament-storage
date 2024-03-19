@@ -52,4 +52,8 @@ uploadController.get("/get/:filename", (req, res) => {
     return res.sendFile(req.params.filename, { root: uploadsPath });
 });
 
+uploadController.get("/usage", async (_res, res) => {
+    res.json({ total: 1000, used: 200 });
+});
+
 module.exports = uploadController;

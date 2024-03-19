@@ -89,4 +89,10 @@ uploadGDriveController.get("/get/:filename", async (req, res) => {
     data.pipe(res);
 });
 
+uploadGDriveController.get("/usage", async (_res, res) => {
+    const result = await gdrive.getUsage();
+
+    res.json(result);
+});
+
 module.exports = uploadGDriveController;

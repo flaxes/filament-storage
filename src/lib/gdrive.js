@@ -79,6 +79,14 @@ class Gdrive {
 
         return res;
     }
+
+    async getUsage() {
+        const res = await this.#drive.about.get({
+            fields: "storageQuota",
+        });
+
+        return res.data.storageQuota;
+    }
 }
 
 module.exports = Gdrive;

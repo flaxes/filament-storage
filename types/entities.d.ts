@@ -67,12 +67,16 @@ declare interface UploadEntity {
 declare interface FilamentEntity {
     name?: string;
 
-    quantity: number;
+    quantity?: number;
+    weightGramms?: number;
 
     brand: string;
     color: string;
     colorName: string;
     material: string;
+    price?: number;
+    priceUsd?: number;
+
     type?: string;
     comment?: string;
 
