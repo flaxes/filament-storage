@@ -5,6 +5,7 @@ const { uploadsPath } = require("../../config");
 const crudController = require("../core/crud.controller");
 const StreamEngine = require("../lib/stream.engine");
 const gdrive = require("../instances/gdrive.instance");
+const filamentsXlsxEndpoint = require("./endpoints/filaments-xlsx.endpoint");
 
 /* const diskStorage = multer.diskStorage({
     destination(req, _file, cb) {
@@ -67,6 +68,8 @@ uploadGDriveController.post("/upload", uploadMiddleware.array("files[]"), async 
 
     res.json(result);
 });
+
+uploadGDriveController.get("/get/filaments.xlsx", filamentsXlsxEndpoint);
 
 uploadGDriveController.get("/get/:filename", async (req, res) => {
     const [file] = await uploadRepo.findByColumn([["fileName", req.params.filename]]);

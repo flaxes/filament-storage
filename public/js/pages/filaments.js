@@ -37,7 +37,7 @@
 
     // @ts-ignore
     q("#table-import").onclick = () => {
-        const url = window.location.origin + "/api/filaments/filaments.xlsx";
+        const url = window.location.origin + `/api/uploads/get/filaments.xlsx?${filePostfix()}`;
 
         window.location.replace(url);
     };

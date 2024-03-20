@@ -3,6 +3,7 @@ const multer = require("multer");
 const uploadRepo = require("../services/repo/upload.repo");
 const { uploadsPath } = require("../../config");
 const crudController = require("../core/crud.controller");
+const filamentsXlsxEndpoint = require("./endpoints/filaments-xlsx.endpoint");
 
 const diskStorage = multer.diskStorage({
     destination(req, _file, cb) {
@@ -47,6 +48,8 @@ uploadController.post("/upload", uploadMiddleware.array("files[]"), async (req, 
 
     res.json(result);
 });
+
+uploadController.get("/get/filaments.xlsx", filamentsXlsxEndpoint);
 
 uploadController.get("/get/:filename", (req, res) => {
     return res.sendFile(req.params.filename, { root: uploadsPath });
