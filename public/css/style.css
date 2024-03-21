@@ -72,6 +72,8 @@ td {
     padding-bottom: 10px;
 }
 
+/* .table input {} */
+
 .table input[type="text"] {
     width: 100px;
 }
@@ -83,6 +85,21 @@ td {
 .table input[type="datetime-local"] {
     width: 170px;
 }
+
+.table input[type="color"] {
+    min-width: 100px;
+    height: 40px;
+}
+
+.table input[name="fileName"] {
+    width: 300px;
+}
+
+.table input[name="sizeMb"] {
+    width: 76px;
+    text-align: center;
+}
+
 
 .table [name="id"] {
     width: 20px;
@@ -128,17 +145,11 @@ td {
     max-height: 80px;
 }
 
-.table input[name="fileName"] {
-    width: 300px;
-}
+/* .card {} */
 
-.table input[name="sizeMb"] {
-    width: 76px;
-    text-align: center;
-}
-
-.card {
-    width: 15%;
+.card input[type="color"] {
+    min-width: 100px;
+    height: 40px;
 }
 
 .card .photo {
@@ -155,16 +166,6 @@ td {
 .card > label {
     font-size: larger;
     font-weight: bold;
-}
-
-.field-link {
-    display: flex;
-    align-items: center;
-}
-
-.field-link a {
-    padding-right: 4px;
-    text-decoration: none;
 }
 
 .card .card-field {
@@ -188,6 +189,16 @@ td {
 
 .card .upload-form {
     align-self: center;
+}
+
+.field-link {
+    display: flex;
+    align-items: center;
+}
+
+.field-link a {
+    padding-right: 4px;
+    text-decoration: none;
 }
 
 /* .card .card-field button {

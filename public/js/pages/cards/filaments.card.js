@@ -2,10 +2,13 @@
 
 (async () => {
     const filamentId = Number(LOC_SEARCH.id);
-    const wrap = document.createElement("div");
-    wrap.className = "wrap-static";
 
-    main.append(wrap);
+    const wrap = wrapTag("div", "", { id: "wrap-static", class: "wrap-static" }, [
+        wrapTag("div", "", { id: "card-filament" }),
+        wrapTag("div", "", { id: "table-filament-settings" }),
+    ]);
+
+    main.insertAdjacentHTML("beforeend", wrap);
 
     const filamentCard = new CardHtml(
         "/api/filaments",
@@ -23,7 +26,7 @@
             createdAt: "date",
             updatedAt: "date",
         },
-        wrap,
+        qStrict("#card-filament"),
         "filament"
     );
 
@@ -46,9 +49,11 @@
 
             comment: "string",
         },
-        wrap
+        qStrict("#table-filament-settings")
     );
     settingsTable.strictSearch = true;
+    settingsTable.createHeaderEl({ create: true });
+
     await settingsTable.init([["filamentId", filamentId]]);
 
     filamentCard.onLinkButton = () => {
