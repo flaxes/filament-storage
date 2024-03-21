@@ -1,0 +1,135 @@
+{
+    "_header": {
+        "index": "Головна",
+        "filaments": "Нитки",
+        "filamentMaterials": "Матеріали",
+        "brands": "Бренди",
+        "prints": "Друк",
+        "logout": "Вийти",
+        "color": "Колір",
+        "static": "Статичний",
+        "uploads": "Завантаження",
+        "brand": "Бренд",
+        "weight": "Вага",
+        "quantity": "Кількість",
+        "admin": "Адмін"
+    },
+
+    "actionDelete": "Видалити",
+    "actionOpen": "Відкрити",
+    "actionSave": "Зберегти",
+    "actionSearch": "Пошук",
+    "actionSubmit": "Підтвердити",
+    "actionUpdate": "Оновити",
+
+    "promptAreYouSure": "Ви впевнені?",
+    "labelActions": "Дії",
+    "labelCard": "Картка:",
+    "labelSearch": "Пошук:",
+    "labelPhotos": "Фотографії:",
+    "labelFiles": "Файли:",
+    "labelCost": "Вартість:",
+    "labelGramms": "Грами:",
+    "labelVersion": "Версія:",
+    "labelDiskUsage": "Використання диска",
+    "labelTotal": "Всього:",
+    "labelFree": "Вільно:",
+    "labelUsed": "Використано:",
+    "labelBrands": "Бренди:",
+    "labelMaterials": "Матеріали:",
+    "labelTypes": "Типи:",
+    "current": "поточний",
+    "last": "останній",
+    "settings": "налаштування",
+    "login": "увійти",
+    "download": "завантажити",
+    "password": "пароль",
+    "used": "використано",
+    "count": "кількість",
+    "usedTimes": "разів використано",
+    "open": "відкрити",
+    "show": "показати",
+    "edit": "редагувати",
+    "delete": "видалити",
+    "replace": "замінити",
+    "update": "оновити",
+    "create": "створити",
+    "kg": "кг",
+    "link": "посилання",
+
+    "_columns": {
+        "id": "ID",
+        "name": "Назва",
+        "type": "Тип",
+        "material": "Матеріал",
+        "createdAt": "Створено",
+        "updatedAt": "Оновлено",
+        "brand": "Бренд",
+        "color": "Вигляд",
+        "colorName": "Колір",
+        "quantity": "Кількість",
+        "priceUsd": "Ціна$",
+        "price": "Ціна",
+        "print": "Друк",
+        "history": "Історія",
+        "filament": "Нитка",
+        "filamentId": "ID нитки",
+        "initialNozzleTemp": "Початкова температура сопла",
+        "initialBedTemp": "Початкова температура столу",
+        "nozzleTemp": "Температура сопла",
+        "bedTemp": "Температура столу",
+        "comment": "Коментар",
+        "buyLink": "Купити",
+        "isNoExport": "Не експортувати",
+        "flowRatio": "Коефіцієнт потоку",
+        "kFactor": "Коефіцієнт K",
+        "sizeMb": "Розмір МБ",
+        "fileName": "Ім'я файлу",
+        "mimetype": "Тип вмісту",
+        "isPhoto": "Фото",
+        "weightGramms": "Грами",
+        "cost": "Вартість",
+        "printedName": "Друк",
+        "printedTimes": "Кількість",
+        "projectLink": "Посилання на проект",
+        "originLink": "Оригінальне посилання",
+        "status": "Статус",
+        "previewFile": "Попередній перегляд",
+        "openSlicer": "Відкрити слисер",
+        "projectUploadFile": "Проект",
+        "": ""
+    },
+
+    "_homePage": {
+        "h1": "Панель керування"
+    },
+
+    "_loginPage": {
+        "h1": "Увійти до сховища",
+        "username": "Ім'я користувача:",
+        "password": "Пароль:",
+        "login": "Увійти"
+    },
+
+    "_filamentsPage": {
+        "h1": "Нитки"
+    },
+
+    "_staticPage": {
+        "h1": "Статичний"
+    },
+
+    "_uploadsPage": {
+        "h1": "Завантаження"
+    },
+
+    "_printsPage": {
+        "h1": "Друк"
+    },
+
+    "_adminPage": {
+        "h1": "Адміністратор",
+        "update": "Оновити",
+        "logs": "Логи:"
+    }
+}

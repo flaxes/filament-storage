@@ -1,0 +1,135 @@
+{
+    "_header": {
+        "index": "Главная",
+        "filaments": "Нити",
+        "filamentMaterials": "Материалы",
+        "brands": "Бренды",
+        "prints": "Печати",
+        "logout": "Выйти",
+        "color": "Цвет",
+        "static": "Статический",
+        "uploads": "Загрузки",
+        "brand": "Бренд",
+        "weight": "Вес",
+        "quantity": "Количество",
+        "admin": "Админ"
+    },
+
+    "actionDelete": "Удалить",
+    "actionOpen": "Открыть",
+    "actionSave": "Сохранить",
+    "actionSearch": "Поиск",
+    "actionSubmit": "Подтвердить",
+    "actionUpdate": "Обновить",
+
+    "promptAreYouSure": "Вы уверены?",
+    "labelActions": "Действия",
+    "labelCard": "Карта:",
+    "labelSearch": "Поиск:",
+    "labelPhotos": "Фотографии:",
+    "labelFiles": "Файлы:",
+    "labelCost": "Стоимость:",
+    "labelGramms": "Граммы:",
+    "labelVersion": "Версия:",
+    "labelDiskUsage": "Использование диска",
+    "labelTotal": "Всего:",
+    "labelFree": "Свободно:",
+    "labelUsed": "Использовано:",
+    "labelBrands": "Бренды:",
+    "labelMaterials": "Материалы:",
+    "labelTypes": "Типы:",
+    "current": "текущий",
+    "last": "последний",
+    "settings": "настройки",
+    "login": "логин",
+    "download": "скачать",
+    "password": "пароль",
+    "used": "использовано",
+    "count": "количество",
+    "usedTimes": "раз использовано",
+    "open": "открыть",
+    "show": "показать",
+    "edit": "редактировать",
+    "delete": "удалить",
+    "replace": "заменить",
+    "update": "обновить",
+    "create": "создать",
+    "kg": "кг",
+    "link": "ссылка",
+
+    "_columns": {
+        "id": "ID",
+        "name": "Название",
+        "type": "Тип",
+        "material": "Материал",
+        "createdAt": "Создано",
+        "updatedAt": "Обновлено",
+        "brand": "Бренд",
+        "color": "Вид",
+        "colorName": "Цвет",
+        "quantity": "Количество",
+        "priceUsd": "Цена$",
+        "price": "Цена",
+        "print": "Печать",
+        "history": "История",
+        "filament": "Нить",
+        "filamentId": "ID нити",
+        "initialNozzleTemp": "Начальная температура сопла",
+        "initialBedTemp": "Начальная температура стола",
+        "nozzleTemp": "Температура сопла",
+        "bedTemp": "Температура стола",
+        "comment": "Комментарий",
+        "buyLink": "Купить",
+        "isNoExport": "Не экспортировать",
+        "flowRatio": "Коэффициент потока",
+        "kFactor": "Коэффициент K",
+        "sizeMb": "Размер МБ",
+        "fileName": "Имя файла",
+        "mimetype": "Тип содержимого",
+        "isPhoto": "Фото",
+        "weightGramms": "Граммы",
+        "cost": "Стоимость",
+        "printedName": "Печать",
+        "printedTimes": "Количество",
+        "projectLink": "Ссылка на проект",
+        "originLink": "Оригинальная ссылка",
+        "status": "Статус",
+        "previewFile": "Предпросмотр",
+        "openSlicer": "Открыть слисер",
+        "projectUploadFile": "Проект",
+        "": ""
+    },
+
+    "_homePage": {
+        "h1": "Панель управления"
+    },
+
+    "_loginPage": {
+        "h1": "Вход в хранилище",
+        "username": "Имя пользователя:",
+        "password": "Пароль:",
+        "login": "Войти"
+    },
+
+    "_filamentsPage": {
+        "h1": "Нити"
+    },
+
+    "_staticPage": {
+        "h1": "Статика"
+    },
+
+    "_uploadsPage": {
+        "h1": "Загрузки"
+    },
+
+    "_printsPage": {
+        "h1": "Печати"
+    },
+
+    "_adminPage": {
+        "h1": "Администратор",
+        "update": "Обновить",
+        "logs": "Логи:"
+    }
+}
