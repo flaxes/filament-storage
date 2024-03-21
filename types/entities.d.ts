@@ -65,8 +65,6 @@ declare interface UploadEntity {
 }
 
 declare interface FilamentEntity {
-    name?: string;
-
     quantity?: number;
     weightGramms?: number;
 
@@ -77,6 +75,7 @@ declare interface FilamentEntity {
     price?: number;
     priceUsd?: number;
 
+    isNoExport?: boolean;
     type?: string;
     comment?: string;
 

@@ -1,4 +1,4 @@
-const filamentRepo = require("../services/repo/filament.repo");
+const filamentRepo = require("../services/repo/filaments.repo");
 
 /** @type {FilamentEntity[]} */
 const data = [

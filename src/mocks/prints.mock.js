@@ -1,4 +1,4 @@
-const printRepo = require("../services/repo/print.repo");
+const printRepo = require("../services/repo/prints.repo");
 
 /** @type {PrintEntity[]} */
 const data = [

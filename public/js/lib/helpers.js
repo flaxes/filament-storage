@@ -72,6 +72,10 @@ function wrapTag(tag, text, props, elements) {
         html += elements.join("");
     }
 
+    if (text && elements && elements.length) {
+        throw new Error("Cannot create text and elements. Use text as element");
+    }
+
     html += `${text || ""}</${tag}>`;
 
     return html;

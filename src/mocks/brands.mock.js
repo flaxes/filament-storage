@@ -1,4 +1,4 @@
-const brandRepo = require("../services/repo/brand.repo");
+const brandRepo = require("../services/repo/brands.repo");
 
 /** @type {BrandEntity[]} */
 const data = [

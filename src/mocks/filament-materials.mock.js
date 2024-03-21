@@ -1,4 +1,4 @@
-const filamentMaterialRepo = require("../services/repo/filament-material.repo");
+const filamentMaterialRepo = require("../services/repo/filament-materials.repo");
 
 /** @type {FilamentMaterialEntity[]} */
 const data = [

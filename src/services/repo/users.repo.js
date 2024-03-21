@@ -3,12 +3,12 @@ const RepoService = require("../repo.service");
 /**
  * @extends RepoService<UserEntity>
  */
-class UserRepo extends RepoService {
+class UsersRepo extends RepoService {
     constructor() {
         super("users");
     }
 }
 
-const userRepo = new UserRepo();
+const usersRepo = new UsersRepo();
 
-module.exports = userRepo;
+module.exports = usersRepo;

@@ -1,7 +1,6 @@
 const multer = require("multer");
 
-const uploadRepo = require("../services/repo/upload.repo");
-const { uploadsPath } = require("../../config");
+const uploadRepo = require("../services/repo/uploads.repo");
 const crudController = require("../core/crud.controller");
 const StreamEngine = require("../lib/stream.engine");
 const gdrive = require("../instances/gdrive.instance");

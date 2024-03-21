@@ -54,6 +54,12 @@ class Gdrive {
         return res;
     }
 
+    async deleteFile(fileId) {
+        const res = await this.#drive.files.delete({ fileId });
+
+        return res;
+    }
+
     /**
      *
      * @param {import('stream').Readable} fileStream

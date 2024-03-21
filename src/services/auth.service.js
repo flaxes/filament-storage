@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const { randomString } = require("../lib/helpers");
 const { sessionTtlMinutes } = require("../../config");
 const sessionRepo = require("./repo/sessions.repo");
-const userRepo = require("./repo/user.repo");
+const userRepo = require("./repo/users.repo");
 
 class AuthService {
     createHash(password, salt) {

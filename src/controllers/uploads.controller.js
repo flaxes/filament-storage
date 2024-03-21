@@ -1,6 +1,6 @@
 const multer = require("multer");
 
-const uploadRepo = require("../services/repo/upload.repo");
+const uploadRepo = require("../services/repo/uploads.repo");
 const { uploadsPath } = require("../../config");
 const crudController = require("../core/crud.controller");
 const filamentsXlsxEndpoint = require("./endpoints/filaments-xlsx.endpoint");

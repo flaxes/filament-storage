@@ -96,11 +96,14 @@ class TableHtml {
                 return wrapTag("input", "", options);
 
             case "date":
-                return wrapTag("input", "", {
-                    type: "datetime-local",
-                    value: value ? dateTimeLocal(new Date(value * 1000)) : "",
-                    name: column,
-                });
+                options.value = value ? dateTimeLocal(new Date(value * 1000)) : "";
+                options.type = "datetime-local";
+
+                if (["createdAt", "updatedAt"].includes(column)) {
+                    options.disabled = "";
+                }
+
+                return wrapTag("input", "", options);
 
             case "number":
                 if (column === "id") return wrapTag("span", `#${value}`, {});
@@ -458,6 +461,11 @@ class TableHtml {
             // @ts-ignore
             element.dataset.id = res.id;
             this.data[res.id] = res;
+
+            const saveButton = this.appendTo.querySelector(".create-button");
+            if (saveButton) {
+                saveButton.removeAttribute("disabled");
+            }
         }
 
         // document.location.reload();
@@ -466,7 +474,7 @@ class TableHtml {
     async onCreateButton(e) {
         const { afterAppend, element } = await this.createRow({});
         this.table.children[0].after(element);
-        e.target.remove();
+        e.target.setAttribute("disabled", "");
 
         afterAppend();
     }

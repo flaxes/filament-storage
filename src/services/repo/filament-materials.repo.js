@@ -3,12 +3,12 @@ const RepoService = require("../repo.service");
 /**
  * @extends RepoService<FilamentMaterialEntity>
  */
-class FilamentMaterialRepo extends RepoService {
+class FilamentMaterialsRepo extends RepoService {
     constructor() {
         super("filament_materials");
     }
 }
 
-const filamentMaterialRepo = new FilamentMaterialRepo();
+const filamentMaterialsRepo = new FilamentMaterialsRepo();
 
-module.exports = filamentMaterialRepo;
+module.exports = filamentMaterialsRepo;

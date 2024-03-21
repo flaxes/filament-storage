@@ -1,4 +1,4 @@
-const uploadRepo = require("../services/repo/upload.repo");
+const uploadRepo = require("../services/repo/uploads.repo");
 
 /** @type {UploadEntity[]} */
 const data = [
