@@ -48,6 +48,8 @@ class CardHtml {
         const container = document.createElement("div");
 
         this.card.append(container);
+
+        /** @type {Record<string, HTMLElement>} */
         this.containers[name] = container;
 
         return container;
@@ -102,20 +104,19 @@ class CardHtml {
             const formData = new FormData();
 
             // Add a text field
-            formData.append("cdntoken", CDN_TOKEN);
             if (isPhoto) {
                 formData.append("isPhoto", "1");
             }
 
-            // @ts-ignore
-            const selection = await window.showOpenFilePicker({ multiple: true });
-
-            for (const s of selection) {
-                const file = await s.getFile();
-                formData.append("files[]", file);
-            }
-
             try {
+                // @ts-expect-error
+                const selection = await window.showOpenFilePicker({ multiple: true });
+
+                for (const s of selection) {
+                    const file = await s.getFile();
+                    formData.append("files[]", file);
+                }
+
                 const response = await fetch(uploadUrl, {
                     method: "POST",
                     body: formData,
@@ -124,15 +125,14 @@ class CardHtml {
 
                 const json = await response.json();
                 if (onUpload) {
-                    onUpload(selection, json);
+                    await onUpload(selection, json);
                 }
             } catch (e) {
                 console.error(e);
             }
         };
 
-        // @ts-ignore
-        form.querySelector("button").onclick = sendCb;
+        qStrict("button", HTMLButtonElement, form).onclick = sendCb;
 
         return form;
     }
@@ -181,11 +181,8 @@ class CardHtml {
         const mainContainer = this.getContainer("main");
         mainContainer.innerHTML = html;
 
-        // @ts-ignore
         mainContainer.querySelector(".delete-button").onclick = (e) => this.onDeleteButton(e);
-        // @ts-ignore
         mainContainer.querySelector(".link-button").onclick = () => this.onLinkButton();
-        // @ts-ignore
         mainContainer.querySelector(".save-button").onclick = (e) => this.onSaveButton(e);
     }
 

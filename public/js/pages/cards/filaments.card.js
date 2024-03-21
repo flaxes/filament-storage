@@ -5,7 +5,7 @@
 
     const wrap = wrapTag("div", "", { id: "wrap-static", class: "wrap-static" }, [
         wrapTag("div", "", { id: "card-filament" }),
-        wrapTag("div", "", { id: "table-filament-settings" }),
+        wrapTag("div", "", { id: "table-filament-settings", class: "wrap" }),
     ]);
 
     main.insertAdjacentHTML("beforeend", wrap);
@@ -46,13 +46,20 @@
 
             flowRatio: "number",
             kFactor: "number",
+            /* filamentId: "number", */
 
             comment: "string",
         },
         qStrict("#table-filament-settings")
     );
+
     settingsTable.strictSearch = true;
     settingsTable.createHeaderEl({ create: true });
+    settingsTable.onInitData = (data) => {
+        data.filamentId = filamentId;
+
+        return data;
+    };
 
     await settingsTable.init([["filamentId", filamentId]]);
 

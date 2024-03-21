@@ -11,6 +11,6 @@
         "resolveJsonModule": true,
         "outDir": "./build"
     },
-    "include": ["**/*", "../langs/en.json"],
+    "include": ["**/*", "../langs/en.json", "types.ts"],
     "exclude": ["build"]
 }

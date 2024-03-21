@@ -3,10 +3,18 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-size: 18px;
 }
 
 main {
-    padding: 20px;
+    padding: 12px;
+    height: 90%;
+    overflow-y: scroll;
+}
+
+header {
+    width: 100%;
+    min-height: 4%;
 }
 
 .d-none {
@@ -25,7 +33,7 @@ main {
 
 .header {
     display: flex;
-    width: 100%;
+    flex-wrap: wrap;
     background-color: var(--header-color);
 }
 
@@ -53,7 +61,6 @@ main {
 }
 
 .table-outer {
-    overflow-x: scroll;
     padding-top: 20px;
     width: fit-content;
 }
@@ -66,13 +73,41 @@ main {
 /* .table {
 } */
 
-.table tr,
-td {
-    padding-right: 4px;
-    padding-bottom: 10px;
+.table tr {
+    /*     padding-right: 4px;
+    padding-bottom: 10px; */
+    height: 30px;
+    border-radius: 8px;
 }
 
-/* .table input {} */
+.table td > * {
+    border: none;
+}
+
+.table td {
+    padding: 0;
+    border-radius: 2px;
+    border: 2px solid var(--row-border-color);
+}
+
+.table tr:nth-of-type(even) {
+    background-color: var(--row-even-color);
+}
+
+.table tr:nth-of-type(even) > td > * {
+    background-color: var(--row-even-color);
+}
+
+.table td {
+    height: 20px;
+}
+
+.table td input,
+select,
+.field-link {
+    position: inherit;
+    height: 30px;
+}
 
 .table input[type="text"] {
     width: 100px;
@@ -88,7 +123,6 @@ td {
 
 .table input[type="color"] {
     min-width: 100px;
-    height: 40px;
 }
 
 .table input[name="fileName"] {
@@ -99,7 +133,6 @@ td {
     width: 76px;
     text-align: center;
 }
-
 
 .table [name="id"] {
     width: 20px;
@@ -116,6 +149,11 @@ td {
 
 .table td button {
     padding: 6px;
+}
+
+.table td button:hover {
+    background-color: var(--row-hover-color);
+    color: #ffffff;
 }
 
 .table-header {
@@ -216,6 +254,10 @@ td {
     margin-bottom: 8px;
 }
 
+.wrap {
+    overflow-x: scroll;
+}
+
 .wrap-static {
     display: flex;
     justify-content: space-around;
@@ -232,4 +274,20 @@ td {
     --header-border-color: #3f0091;
     --active-color: #4c00da;
     --danger-color: #df3b3b;
+    --row-even-color: #e4e4e4;
+    --row-border-color: #dddddd;
+    --row-hover-color: #6a00e4;
 }
+
+/* @media screen and (min-width: 600px) {
+    header {
+        width: 105%;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    header {
+        width: 100%;
+    }
+}
+ */

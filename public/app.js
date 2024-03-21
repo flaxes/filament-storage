@@ -1,9 +1,8 @@
 // @ts-check
-/** @type {import('../langs/en.json')} */ // @ts-ignore
+/** @type {import('../langs/en.json')} */ // @ts-expect-error
 const lang = {};
 
 const main = document.querySelector("main") || never("NO MAIN");
-let CDN_TOKEN = "???";
 
 async function app() {
     const render = {
@@ -115,7 +114,7 @@ async function app() {
     // Setup lang
     Object.assign(lang, await createRequest("/lang", null, "GET"));
 
-    const headTitle = document.querySelector("head > title");
+    const headTitle = qStrict("head > title", HTMLTitleElement);
     const pageName = document.location.pathname;
 
     const PAGE = PAGES[pageName];
@@ -123,7 +122,6 @@ async function app() {
         const d = document.createElement("div");
 
         d.innerText = `PAGE UNKNOWN "${pageName}"`;
-        // @ts-ignore
         headTitle.innerText = "PAGE UNKNOWN";
 
         main.append(d);
@@ -142,7 +140,6 @@ async function app() {
         return;
     }
 
-    // @ts-ignore
     headTitle.innerText = lang[PAGE.key].h1;
 
     for (const script of PAGE.scripts) {

@@ -9,7 +9,6 @@ const data = [
         material: "PLA",
         type: "Basic",
         quantity: 1,
-        name: "",
     },
     {
         brand: "3DPlast",
@@ -18,7 +17,6 @@ const data = [
         material: "PLA",
         type: "Basic",
         quantity: 1,
-        name: "",
     },
     {
         brand: "3DPlast",
@@ -27,7 +25,6 @@ const data = [
         material: "PLA",
         type: "Transperant",
         quantity: 1,
-        name: "",
     },
 ];
 

@@ -2,9 +2,9 @@
 
 (() => {
     const wrap = wrapTag("div", "", { id: "wrap-static", class: "wrap-static" }, [
-        wrapTag("div", "", { id: "table-brands" }, [wrapTag("h3", lang.labelBrands)]),
-        wrapTag("div", "", { id: "table-materials" }, [wrapTag("h3", lang.labelMaterials)]),
-        wrapTag("div", "", { id: "table-types" }, [wrapTag("h3", lang.labelTypes)]),
+        wrapTag("div", "", { id: "table-brands", class: "wrap" }, [wrapTag("h3", lang.labelBrands)]),
+        wrapTag("div", "", { id: "table-materials", class: "wrap" }, [wrapTag("h3", lang.labelMaterials)]),
+        wrapTag("div", "", { id: "table-types", class: "wrap" }, [wrapTag("h3", lang.labelTypes)]),
     ]);
 
     main.insertAdjacentHTML("beforeend", wrap);

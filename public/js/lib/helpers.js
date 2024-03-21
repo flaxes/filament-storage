@@ -1,25 +1,33 @@
 /**
  *
  * @param {string} sel
+ * @param {HTMLElement | Document} [fromEl]
  * @returns {HTMLElement | null}
  */
-function q(sel) {
-    return document.querySelector(sel);
+function q(sel, fromEl = document) {
+    return fromEl.querySelector(sel);
 }
 
 /**
+ * Retrieves an element matching the given CSS selector, optionally checking its type.
  * @template T
- * @param {string} sel
- * @param {T} [type]
- * @returns {InstanceType<T>}
+ * @param {string} sel - The CSS selector to query.
+ * @param {ClassOf<T>} [type] - The constructor function representing the type of element expected.
+ * @param {HTMLElement | Document} [fromEl=document] - The optional element to query within.
+ * @returns {T} - The queried element.
  */
-function qStrict(sel, type) {
-    const el = q(sel);
+function qStrict(sel, type, fromEl = document) {
+    const el = q(sel, fromEl);
 
-    if (!el) throw new Error(`NO ELEMENT ${sel}`);
+    if (!el) {
+        throw new Error(`NO ELEMENT ${sel}`);
+    }
 
-    // @ts-ignore
-    return el;
+    if (type && !(el instanceof type)) {
+        throw new TypeError(`${el}`);
+    }
+
+    return /** @type {T} */ (el);
 }
 
 function qq(sel) {
@@ -27,7 +35,6 @@ function qq(sel) {
 }
 
 const LOC_RAW_PARAMS = new URL(document.location.href).searchParams;
-// @ts-ignore
 const LOC_SEARCH = Object.fromEntries(LOC_RAW_PARAMS.entries());
 
 function dateTimeLocal(date) {

@@ -221,7 +221,7 @@ class TableHtml {
 
         switch (primitiveType) {
             case "boolean":
-                // @ts-ignore
+                // @ts-expect-error
                 return element.checked;
             case "color":
                 return value;
@@ -259,21 +259,38 @@ class TableHtml {
         if (prependTo) {
             prependTo.prepend(headerEl);
         } else {
-            this.appendTo.append(headerEl);
+            this.tableOuter.prepend(headerEl);
         }
 
         if (options.search) {
+            // WIP
+            const vals = ["PLA", "PETG"];
+            const valsEl = vals.map((value) => wrapTag("option", "", { value }));
+
+            const id = `search-${Date.now()}`;
+            const inputId = `input${id}`;
+            const datalistId = `datalist${id}`;
+            const buttonId = `button${id}`;
+
             headerEl.insertAdjacentHTML(
                 "beforeend",
                 [
-                    wrapTag("input", "", { placeholder: ". . .", class: "table-header", name: "search" }),
-                    wrapTag("button", "", { class: "search-button fa fa-search" }),
+                    wrapTag("datalist", "", { id: datalistId }, valsEl),
+                    wrapTag("input", "", {
+                        placeholder: ". . .",
+                        class: "table-header",
+                        name: "search",
+                        id: inputId,
+                        list: datalistId,
+                    }),
+                    wrapTag("button", "", { class: "search-button fa fa-search", id: buttonId }),
                 ].join("")
             );
 
-            const input = headerEl.querySelector(".table-header") || never("NO INPUT");
+            const datalist = qStrict(`#${datalistId}`, HTMLDataListElement, headerEl);
+            const input = qStrict(`#${inputId}`, HTMLInputElement, headerEl);
+            const searchButton = qStrict(`#${buttonId}`, HTMLButtonElement, headerEl);
 
-            const searchButton = headerEl.querySelector(".search-button") || never();
             const doSearch = (e) => this.onSearchButton(e, input);
             enterEvent(input, doSearch);
 
@@ -284,6 +301,7 @@ class TableHtml {
 
             // @ts-ignore
             searchButton.onclick = (e) => this.onSearchButton(e, input);
+            searchButton.onchange = console.log;
         }
 
         if (options.create) {
@@ -292,6 +310,8 @@ class TableHtml {
             // @ts-ignore
             headerEl.querySelector(".create-button").onclick = (e) => this.onCreateButton(e);
         }
+
+        return headerEl;
     }
 
     async createRow(row) {
@@ -402,7 +422,14 @@ class TableHtml {
         this.appendTo.append(this.tableOuter);
     }
 
-    onInitData(data) {}
+    /**
+     *
+     * @param {object} data
+     * @returns
+     */
+    onInitData(data) {
+        return data;
+    }
 
     /** @private */
     async onDeleteButton(e) {
@@ -434,9 +461,8 @@ class TableHtml {
     }
 
     /** @private */
-    async onSaveButton(e) {
+    async onSaveButton(e, newData = {}) {
         const { element, id } = this.getDataFromE(e);
-        const newData = {};
 
         element.querySelectorAll("input,select").forEach(
             /** @param {HTMLInputElement | HTMLSelectElement} input */ // @ts-ignore
@@ -472,7 +498,7 @@ class TableHtml {
     }
 
     async onCreateButton(e) {
-        const { afterAppend, element } = await this.createRow({});
+        const { afterAppend, element } = await this.createRow(this.onInitData({}));
         this.table.children[0].after(element);
         e.target.setAttribute("disabled", "");
 

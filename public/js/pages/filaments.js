@@ -22,12 +22,10 @@
         main,
         true
     );
-
     table.searchBy = ["brand", "material", "colorName", "name", "type"];
 
-    table.createHeaderEl();
-
-    (q(".table-header") || never()).insertAdjacentHTML(
+    const headerEl = table.createHeaderEl();
+    headerEl.insertAdjacentHTML(
         "beforeend",
         wrapTag("button", "", {
             id: "table-import",
@@ -35,9 +33,8 @@
         })
     );
 
-    // @ts-ignore
-    q("#table-import").onclick = () => {
-        const url = window.location.origin + `/api/uploads/get/filaments.xlsx?${filePostfix()}`;
+    qStrict("#table-import", HTMLButtonElement, headerEl).onclick = () => {
+        const url = `${window.location.origin}/api/uploads/get/filaments.xlsx?${filePostfix()}`;
 
         window.location.replace(url);
     };

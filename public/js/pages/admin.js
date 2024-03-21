@@ -1,7 +1,8 @@
 (() => {
     const wrap = document.createElement("div");
     wrap.className = "wrap-static";
-    document.body.append(wrap);
+    main.append(wrap);
+
     const versionPromise = request("/api/admin/version", {}, "GET");
     const usagePromise = request("/api/uploads/usage", {}, "GET");
 
